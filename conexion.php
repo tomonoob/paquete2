@@ -7,6 +7,7 @@ $database = 'defaultdb';
 
 $conexion = mysqli_init();
 mysqli_ssl_set($conexion, NULL, NULL, NULL, NULL, NULL);
+mysqli_set_charset($conexion, "utf8mb4");
 
 if (!mysqli_real_connect($conexion, $host, $user, $password, $database, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión a Aiven: " . mysqli_connect_error());
