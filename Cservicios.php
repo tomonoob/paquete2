@@ -7,12 +7,14 @@ class cCliente
         include_once("conexion.php");
         $sql="CALL insertar_clientes7('$cedula','$nombres','$apellidos','$direccion','$email','$celular')";
         if($conexion->query($sql)==TRUE){
-          echo "datos insertados correctamente";
+          echo "<script>
+                    alert('¡Datos insertados correctamente!');
+                    window.location.href = 'index.php';
+                  </script>";
         }
         else{
                 echo "error al insertar los datos" . $conexion->error;
 
         }
-        header('Location: index.php');exit;
 	}
 }
