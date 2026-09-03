@@ -10,13 +10,12 @@ $cedula = $_POST['cedula'];
 // Conexión a la base de datos
 include_once("conexion.php");
 
-// 1. Consultar datos personales del cliente
-$sql_cliente = "SELECT * FROM clientes WHERE cedula = '$cedula'";
+$sql_cliente = "SELECT * FROM clientes WHERE cedula COLLATE utf8mb4_general_ci = '$cedula' COLLATE utf8mb4_general_ci";
 $res_cliente = $conexion->query($sql_cliente);
-$cliente = $res_cliente->fetch_assoc();
+$cliente = $res_cliente ? $res_cliente->fetch_assoc() : null;
 
-// 2. Consultar historial de pagos usando el procedimiento almacenado
-$res_pagos = $conexion->query("CALL mostrar_pagos('$cedula')");
+$sql_pagos = "SELECT valor_pagado, fecha FROM movimientos WHERE cedula COLLATE utf8mb4_general_ci = '$cedula' COLLATE utf8mb4_general_ci";
+$res_pagos = $conexion->query($sql_pagos);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
