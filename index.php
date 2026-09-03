@@ -33,6 +33,9 @@
   </tr>
   </table>
 <p></p>
+    <div align="center">
+        <a href="productos_factura/index_productos.php">Factura de productos</a>
+    </div>
 </form>
 </body>
 </html>
