@@ -26,6 +26,9 @@
   </tr>
 </table>
 <p></p>
+    <div align="center">
+        <a href="../index.php">Clientes</a>
+    </div>
 </form>
 </body>
 </html>
