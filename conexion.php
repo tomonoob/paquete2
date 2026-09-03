@@ -7,13 +7,13 @@ $database = 'defaultdb';
 
 $conexion = mysqli_init();
 mysqli_ssl_set($conexion, NULL, NULL, NULL, NULL, NULL);
-mysqli_set_charset($conexion, "utf8mb4");
 
+// 1. Conectar primero a la base de datos
 if (!mysqli_real_connect($conexion, $host, $user, $password, $database, $port, NULL, MYSQLI_CLIENT_SSL)) {
     die("Error de conexión a Aiven: " . mysqli_connect_error());
 }
 
-// Configurar charset y cotejamiento de la conexión
-mysqli_set_charset($conexion, "utf8mb4");
-$conexion->query("SET NAMES 'utf8mb4' COLLATE 'utf8mb4_general_ci'");
+// 2. Definir charset y cotejamiento de sesión sobre la conexión ya activa
+$conexion->set_charset("utf8mb4");
+$conexion->query("SET NAMES utf8mb4 COLLATE utf8mb4_general_ci");
 ?>
