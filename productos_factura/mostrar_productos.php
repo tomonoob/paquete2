@@ -1,16 +1,15 @@
 <?php
-include_once("conexion.php");
+include_once("ServiciosProducto.php");
 
-$sql = "SELECT * FROM productos_factura ORDER BY numero_factura, id";
-$result = $conexion->query($sql);
+$objProducto = new cProducto;
+$filas = $objProducto->mostrar_todos();
 
 $total_general = 0;
-$filas = [];
-while ($row = $result->fetch_assoc()) {
+foreach ($filas as &$row) {
     $row['subtotal'] = $row['cantidad'] * $row['precio_unitario'];
     $total_general += $row['subtotal'];
-    $filas[] = $row;
 }
+unset($row);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

@@ -1,44 +1,34 @@
 <?php
-// Conexión a la base de datos "empresa"
-include_once("conexion.php");
+include_once("Cservicios.php");
 
 $mensaje = "";
 $cliente = null;
+$objCliente = new cCliente;
 
 // 1. SI SE ENVIÓ EL FORMULARIO DE EDICIÓN (Guardar cambios)
 if (isset($_POST['btn_guardar'])) {
-    $cedula    = $_POST['cedula'];
-    $nombres   = $_POST['nombres'];
-    $apellidos = $_POST['apellidos'];
-    $direccion = $_POST['direccion'];
-    $email     = $_POST['email'];
-    $celular   = $_POST['celular'];
+    $cedula    = trim($_POST['cedula']);
+    $nombres   = trim($_POST['nombres']);
+    $apellidos = trim($_POST['apellidos']);
+    $direccion = trim($_POST['direccion']);
+    $email     = trim($_POST['email']);
+    $celular   = trim($_POST['celular']);
 
-    $stmt = $conexion->prepare("UPDATE clientes SET nombres = ?, apellidos = ?, direccion = ?, email = ?, celular = ? WHERE cedula = ?");
-    $stmt->bind_param("ssssss", $nombres, $apellidos, $direccion, $email, $celular, $cedula);
+    $resultado = $objCliente->actualizar_cliente($cedula, $nombres, $apellidos, $direccion, $email, $celular);
 
-    if ($stmt->execute()) {
+    if ($resultado === true) {
         $mensaje = "<p style='color: green; text-align: center;'><strong>¡Datos actualizados correctamente!</strong></p>";
     } else {
-        $mensaje = "<p style='color: red; text-align: center;'>Error al actualizar: " . htmlspecialchars($stmt->error) . "</p>";
+        $mensaje = "<p style='color: red; text-align: center;'>Error al actualizar: " . htmlspecialchars($resultado) . "</p>";
     }
-    $stmt->close();
 
     // Volver a cargar los datos actualizados para mostrarlos en el formulario
-    $stmt = $conexion->prepare("SELECT * FROM clientes WHERE cedula = ?");
-    $stmt->bind_param("s", $cedula);
-    $stmt->execute();
-    $cliente = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    $cliente = $objCliente->consultar_cliente($cedula)['cliente'];
 }
 // 2. SI SE LLEGA DESDE `ingresar_cedula2.php` (Buscar cliente a editar)
 else if (isset($_POST['cedula']) && !empty($_POST['cedula'])) {
-    $cedula = $_POST['cedula'];
-    $stmt = $conexion->prepare("SELECT * FROM clientes WHERE cedula = ?");
-    $stmt->bind_param("s", $cedula);
-    $stmt->execute();
-    $cliente = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    $cedula = trim($_POST['cedula']);
+    $cliente = $objCliente->consultar_cliente($cedula)['cliente'];
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -104,7 +94,7 @@ else if (isset($_POST['cedula']) && !empty($_POST['cedula'])) {
 <?php else: ?>
   <p align="center" style="color: red;">No se encontró ningún cliente para editar.</p>
   <div align="center">
-    <a href="ingresar_cedula2.php">Intentar de nuevo</a> | 
+    <a href="ingresar_cedula2.php">Intentar de nuevo</a> |
     <a href="index.php">Regresar al Menú</a>
   </div>
 <?php endif; ?>

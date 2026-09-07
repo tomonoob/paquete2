@@ -1,9 +1,8 @@
 <?php
-// Conexión a la base de datos "empresa"
-include_once("conexion.php");
+include_once("Cservicios.php");
 
-$sql = "SELECT * FROM clientes";
-$result = $conexion->query($sql);
+$objCliente = new cCliente;
+$clientes = $objCliente->mostrar_todos();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -26,7 +25,7 @@ $result = $conexion->query($sql);
             </tr>
         </thead>
         <tbody>
-        <?php while ($row = $result->fetch_assoc()) { ?>
+        <?php foreach ($clientes as $row): ?>
             <tr>
                 <td><?php echo htmlspecialchars($row['cedula']); ?></td>
                 <td><?php echo htmlspecialchars($row['nombres']); ?></td>
@@ -35,7 +34,7 @@ $result = $conexion->query($sql);
                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                 <td><?php echo htmlspecialchars($row['celular']); ?></td>
             </tr>
-        <?php } ?>
+        <?php endforeach; ?>
         </tbody>
     </table>
     <br />

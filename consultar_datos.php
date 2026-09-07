@@ -1,25 +1,17 @@
 <?php
 // Validar que se haya enviado una cédula
-if (!isset($_POST['cedula']) || empty($_POST['cedula'])) {
+if (!isset($_POST['cedula']) || empty(trim($_POST['cedula']))) {
     header('Location: ingresar_cedula.php');
     exit;
 }
 
-$cedula = $_POST['cedula'];
+$cedula = trim($_POST['cedula']);
 
-// Conexión a la base de datos
-include_once("conexion.php");
-
-$stmt_cliente = $conexion->prepare("SELECT * FROM clientes WHERE cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci");
-$stmt_cliente->bind_param("s", $cedula);
-$stmt_cliente->execute();
-$cliente = $stmt_cliente->get_result()->fetch_assoc();
-$stmt_cliente->close();
-
-$stmt_pagos = $conexion->prepare("SELECT valor_pagado, fecha FROM movimientos WHERE cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci");
-$stmt_pagos->bind_param("s", $cedula);
-$stmt_pagos->execute();
-$res_pagos = $stmt_pagos->get_result();
+include_once("Cservicios.php");
+$objCliente = new cCliente;
+$datos = $objCliente->consultar_cliente($cedula);
+$cliente = $datos['cliente'];
+$pagos = $datos['pagos'];
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -71,22 +63,18 @@ $res_pagos = $stmt_pagos->get_result();
             </tr>
         </thead>
         <tbody>
-        <?php 
-        if ($res_pagos && $res_pagos->num_rows > 0) {
-            while ($pago = $res_pagos->fetch_assoc()) { 
-        ?>
+        <?php if (count($pagos) > 0): ?>
+            <?php foreach ($pagos as $pago): ?>
             <tr>
                 <td align="center">$<?php echo htmlspecialchars($pago['valor_pagado']); ?></td>
                 <td align="center"><?php echo htmlspecialchars($pago['fecha']); ?></td>
             </tr>
-        <?php 
-            } 
-        } else { 
-        ?>
+            <?php endforeach; ?>
+        <?php else: ?>
             <tr>
                 <td colspan="2" align="center">No se encontraron pagos registrados.</td>
             </tr>
-        <?php } ?>
+        <?php endif; ?>
         </tbody>
     </table>
 
@@ -96,7 +84,7 @@ $res_pagos = $stmt_pagos->get_result();
 
 <br />
 <div align="center">
-    <a href="ingresar_cedula.php">Nueva Consulta</a> | 
+    <a href="ingresar_cedula.php">Nueva Consulta</a> |
     <a href="index.php">Regresar al Menú</a>
 </div>
 

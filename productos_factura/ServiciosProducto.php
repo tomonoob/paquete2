@@ -12,17 +12,28 @@ class cProducto
              VALUES (?, ?, ?, ?)"
         );
         $stmt->bind_param("ssid", $numero_factura, $nombre_producto, $cantidad, $precio_unitario);
-
-        if ($stmt->execute()) {
-            echo "<script>
-                    alert('¡Producto registrado correctamente!');
-                    window.location.href = 'index_productos.php';
-                  </script>";
-        } else {
-            echo "Error al insertar el producto: " . $conexion->error;
-        }
+        $ok = $stmt->execute();
+        $error = $stmt->error;
 
         $stmt->close();
+
+        return $ok ? true : $error;
+    }
+
+    // Devuelve todos los productos de todas las facturas
+    function mostrar_todos()
+    {
+        global $conexion;
+        include_once("conexion.php");
+
+        $result = $conexion->query("SELECT * FROM productos_factura ORDER BY numero_factura, id");
+
+        $productos = [];
+        while ($row = $result->fetch_assoc()) {
+            $productos[] = $row;
+        }
+
+        return $productos;
     }
 
     // Devuelve todos los productos de una factura (array asociativo)

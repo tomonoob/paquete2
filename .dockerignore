@@ -1,0 +1,7 @@
+.git
+.gitignore
+*.sql
+.env
+.env.*
+.vscode
+.idea

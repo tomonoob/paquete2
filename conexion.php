@@ -1,4 +1,10 @@
 <?php
+// Mantiene el comportamiento previo a PHP 8.1: los errores de mysqli
+// se devuelven como valores (false / ->error) en vez de lanzar
+// mysqli_sql_exception, que es el modo por defecto desde PHP 8.1 y
+// rompería silenciosamente todos los bloques if/else de este proyecto.
+mysqli_report(MYSQLI_REPORT_OFF);
+
 $host = 'brayanrm-computacionmoviltarea.d.aivencloud.com';
 $port = 16993;
 $user = 'avnadmin';
