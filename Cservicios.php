@@ -4,6 +4,7 @@ class cCliente
 
 	function registrar_cliente($cedula,$nombres,$apellidos,$direccion,$email,$celular)
 	{
+        global $conexion;
         include_once("conexion.php");
         $stmt = $conexion->prepare("CALL insertar_clientes7(?,?,?,?,?,?)");
         $stmt->bind_param("ssssss", $cedula, $nombres, $apellidos, $direccion, $email, $celular);
