@@ -10,17 +10,21 @@ $cedula = $_POST['cedula'];
 // Conexión a la base de datos
 include_once("conexion.php");
 
-$sql_cliente = "SELECT * FROM clientes WHERE cedula COLLATE utf8mb4_general_ci = '$cedula' COLLATE utf8mb4_general_ci";
-$res_cliente = $conexion->query($sql_cliente);
-$cliente = $res_cliente ? $res_cliente->fetch_assoc() : null;
+$stmt_cliente = $conexion->prepare("SELECT * FROM clientes WHERE cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci");
+$stmt_cliente->bind_param("s", $cedula);
+$stmt_cliente->execute();
+$cliente = $stmt_cliente->get_result()->fetch_assoc();
+$stmt_cliente->close();
 
-$sql_pagos = "SELECT valor_pagado, fecha FROM movimientos WHERE cedula COLLATE utf8mb4_general_ci = '$cedula' COLLATE utf8mb4_general_ci";
-$res_pagos = $conexion->query($sql_pagos);
+$stmt_pagos = $conexion->prepare("SELECT valor_pagado, fecha FROM movimientos WHERE cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci");
+$stmt_pagos->bind_param("s", $cedula);
+$stmt_pagos->execute();
+$res_pagos = $stmt_pagos->get_result();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Resultado de la Consulta</title>
 <link rel="stylesheet" href="css/estilos.css">
 </head>
@@ -32,27 +36,27 @@ $res_pagos = $conexion->query($sql_pagos);
     <table width="500" border="1" align="center">
         <tr>
             <th width="150" align="left">Cédula:</th>
-            <td><?php echo $cliente['cedula']; ?></td>
+            <td><?php echo htmlspecialchars($cliente['cedula']); ?></td>
         </tr>
         <tr>
             <th align="left">Nombres:</th>
-            <td><?php echo $cliente['nombres']; ?></td>
+            <td><?php echo htmlspecialchars($cliente['nombres']); ?></td>
         </tr>
         <tr>
             <th align="left">Apellidos:</th>
-            <td><?php echo $cliente['apellidos']; ?></td>
+            <td><?php echo htmlspecialchars($cliente['apellidos']); ?></td>
         </tr>
         <tr>
             <th align="left">Dirección:</th>
-            <td><?php echo $cliente['direccion']; ?></td>
+            <td><?php echo htmlspecialchars($cliente['direccion']); ?></td>
         </tr>
         <tr>
             <th align="left">Email:</th>
-            <td><?php echo $cliente['email']; ?></td>
+            <td><?php echo htmlspecialchars($cliente['email']); ?></td>
         </tr>
         <tr>
             <th align="left">Celular:</th>
-            <td><?php echo $cliente['celular']; ?></td>
+            <td><?php echo htmlspecialchars($cliente['celular']); ?></td>
         </tr>
     </table>
 
@@ -72,8 +76,8 @@ $res_pagos = $conexion->query($sql_pagos);
             while ($pago = $res_pagos->fetch_assoc()) { 
         ?>
             <tr>
-                <td align="center">$<?php echo $pago['valor_pagado']; ?></td>
-                <td align="center"><?php echo $pago['fecha']; ?></td>
+                <td align="center">$<?php echo htmlspecialchars($pago['valor_pagado']); ?></td>
+                <td align="center"><?php echo htmlspecialchars($pago['fecha']); ?></td>
             </tr>
         <?php 
             } 
@@ -87,7 +91,7 @@ $res_pagos = $conexion->query($sql_pagos);
     </table>
 
 <?php else: ?>
-    <p align="center" style="color: red;">No se encontró ningún cliente registrado con la cédula: <strong><?php echo $cedula; ?></strong></p>
+    <p align="center" style="color: red;">No se encontró ningún cliente registrado con la cédula: <strong><?php echo htmlspecialchars($cedula); ?></strong></p>
 <?php endif; ?>
 
 <br />

@@ -8,7 +8,7 @@ $result = $conexion->query($sql);
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Mostrar Todos los Clientes</title>
 <link rel="stylesheet" href="css/estilos.css">
 </head>
@@ -28,12 +28,12 @@ $result = $conexion->query($sql);
         <tbody>
         <?php while ($row = $result->fetch_assoc()) { ?>
             <tr>
-                <td><?php echo $row['cedula']; ?></td>
-                <td><?php echo $row['nombres']; ?></td>
-                <td><?php echo $row['apellidos']; ?></td>
-                <td><?php echo $row['direccion']; ?></td>
-                <td><?php echo $row['email']; ?></td>
-                <td><?php echo $row['celular']; ?></td>
+                <td><?php echo htmlspecialchars($row['cedula']); ?></td>
+                <td><?php echo htmlspecialchars($row['nombres']); ?></td>
+                <td><?php echo htmlspecialchars($row['apellidos']); ?></td>
+                <td><?php echo htmlspecialchars($row['direccion']); ?></td>
+                <td><?php echo htmlspecialchars($row['email']); ?></td>
+                <td><?php echo htmlspecialchars($row['celular']); ?></td>
             </tr>
         <?php } ?>
         </tbody>
