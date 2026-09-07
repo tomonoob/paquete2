@@ -33,3 +33,6 @@ desktop.ini
 # Logs and local data
 *.log
 *.sqlite3
+
+# Database dumps (may contain real customer data)
+*.sql
