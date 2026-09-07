@@ -1,7 +1,6 @@
 <?php
 class cProducto
 {
-    // Inserta un nuevo producto asociado a un número de factura
     function registrar_producto($numero_factura, $nombre_producto, $cantidad, $precio_unitario)
     {
         global $conexion;
@@ -26,7 +25,6 @@ class cProducto
         return $ok ? true : $error;
     }
 
-    // Devuelve todos los productos de todas las facturas
     function mostrar_todos()
     {
         global $conexion;
@@ -42,7 +40,6 @@ class cProducto
         return $productos;
     }
 
-    // Devuelve todos los productos de una factura (array asociativo)
     function consultar_por_factura($numero_factura)
     {
         global $conexion;
@@ -64,7 +61,6 @@ class cProducto
         return $productos;
     }
 
-    // Actualiza un producto existente identificado por su id
     function actualizar_producto($id, $numero_factura, $nombre_producto, $cantidad, $precio_unitario)
     {
         global $conexion;

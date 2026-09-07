@@ -5,7 +5,6 @@ include_once("conexion.php");
 $mensaje = "";
 $producto = null;
 
-// 1. SI SE ENVIÓ EL FORMULARIO DE EDICIÓN (Guardar cambios)
 if (isset($_POST['btn_guardar'])) {
     $id              = (int)$_POST['id'];
     $numero_factura  = trim($_POST['numero_factura']);
@@ -22,14 +21,12 @@ if (isset($_POST['btn_guardar'])) {
         $mensaje = "<p style='color: red; text-align: center;'>Error al actualizar: " . htmlspecialchars($resultado) . "</p>";
     }
 
-    // Volver a cargar el producto actualizado para mostrarlo en el formulario
     $stmt = $conexion->prepare("SELECT * FROM productos_factura WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $producto = $stmt->get_result()->fetch_assoc();
     $stmt->close();
 }
-// 2. SI SE LLEGA DESDE `ingresar_id_producto.php` (Buscar producto a editar)
 else if (isset($_POST['id']) && !empty($_POST['id'])) {
     $id = (int)$_POST['id'];
     $stmt = $conexion->prepare("SELECT * FROM productos_factura WHERE id = ?");
@@ -58,7 +55,6 @@ else if (isset($_POST['id']) && !empty($_POST['id'])) {
     <tr>
       <td width="150">ID</td>
       <td width="242">
-        <!-- El ID no se edita por ser la clave del registro -->
         <input type="text" name="id" value="<?php echo $producto['id']; ?>" readonly style="background-color: #e9e9e9;" />
       </td>
     </tr>

@@ -1,7 +1,6 @@
 <?php
 class cCliente
 {
-    // Inserta un nuevo cliente vía el procedimiento almacenado insertar_clientes7
     function registrar_cliente($cedula, $nombres, $apellidos, $direccion, $email, $celular)
     {
         global $conexion;
@@ -17,8 +16,6 @@ class cCliente
         return $ok ? true : $error;
     }
 
-    // Devuelve un cliente con sus facturas y su historial de pagos
-    // ('cliente' => array|null, 'facturas' => array, 'pagos' => array)
     function consultar_cliente($cedula)
     {
         global $conexion;
@@ -37,7 +34,6 @@ class cCliente
             $objFactura = new cFactura;
             $facturas = $objFactura->listar_por_cliente($cedula);
 
-            // Los pagos se guardan por factura; se unen a través de facturas.cedula
             $stmt = $conexion->prepare(
                 "SELECT m.valor_pagado, m.fecha, m.numero_factura
                  FROM movimientos m
@@ -57,7 +53,6 @@ class cCliente
         return ['cliente' => $cliente, 'facturas' => $facturas, 'pagos' => $pagos];
     }
 
-    // Actualiza los datos de un cliente existente identificado por su cédula
     function actualizar_cliente($cedula, $nombres, $apellidos, $direccion, $email, $celular)
     {
         global $conexion;
@@ -73,7 +68,6 @@ class cCliente
         return $ok ? true : $error;
     }
 
-    // Devuelve todos los clientes registrados
     function mostrar_todos()
     {
         global $conexion;

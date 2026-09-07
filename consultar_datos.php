@@ -1,5 +1,4 @@
 <?php
-// Validar que se haya enviado una cédula
 if (!isset($_POST['cedula']) || empty(trim($_POST['cedula']))) {
     header('Location: ingresar_cedula.php');
     exit;

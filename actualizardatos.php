@@ -5,7 +5,6 @@ $mensaje = "";
 $cliente = null;
 $objCliente = new cCliente;
 
-// 1. SI SE ENVIÓ EL FORMULARIO DE EDICIÓN (Guardar cambios)
 if (isset($_POST['btn_guardar'])) {
     $cedula    = trim($_POST['cedula']);
     $nombres   = trim($_POST['nombres']);
@@ -22,10 +21,8 @@ if (isset($_POST['btn_guardar'])) {
         $mensaje = "<p style='color: red; text-align: center;'>Error al actualizar: " . htmlspecialchars($resultado) . "</p>";
     }
 
-    // Volver a cargar los datos actualizados para mostrarlos en el formulario
     $cliente = $objCliente->consultar_cliente($cedula)['cliente'];
 }
-// 2. SI SE LLEGA DESDE `ingresar_cedula2.php` (Buscar cliente a editar)
 else if (isset($_POST['cedula']) && !empty($_POST['cedula'])) {
     $cedula = trim($_POST['cedula']);
     $cliente = $objCliente->consultar_cliente($cedula)['cliente'];
@@ -50,7 +47,6 @@ else if (isset($_POST['cedula']) && !empty($_POST['cedula'])) {
     <tr>
       <td width="89">Cédula</td>
       <td width="242">
-        <!-- La cédula no se edita por ser la clave del registro -->
         <input type="text" name="cedula" value="<?php echo htmlspecialchars($cliente['cedula']); ?>" readonly style="background-color: #e9e9e9;" />
       </td>
     </tr>

@@ -1,7 +1,6 @@
 <?php
 class cFactura
 {
-    // Crea una nueva factura asociada a un cliente (por cédula)
     function crear_factura($numero_factura, $cedula)
     {
         global $conexion;
@@ -17,7 +16,6 @@ class cFactura
         return $ok ? true : $error;
     }
 
-    // Devuelve una factura con los datos del cliente, o null si no existe
     function obtener_factura($numero_factura)
     {
         global $conexion;
@@ -37,7 +35,6 @@ class cFactura
         return $factura ?: null;
     }
 
-    // Devuelve todas las facturas de un cliente, con el total de cada una
     function listar_por_cliente($cedula)
     {
         global $conexion;
@@ -65,7 +62,6 @@ class cFactura
         return $facturas;
     }
 
-    // Registra un pago contra una factura existente
     function registrar_pago($numero_factura, $valor_pagado)
     {
         global $conexion;

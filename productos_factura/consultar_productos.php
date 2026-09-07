@@ -1,5 +1,4 @@
 <?php
-// Validar que se haya enviado un número de factura
 if (!isset($_POST['numero_factura']) || empty($_POST['numero_factura'])) {
     header('Location: ingresar_factura.php');
     exit;
