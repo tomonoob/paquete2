@@ -11,6 +11,7 @@ include_once("Cservicios.php");
 $objCliente = new cCliente;
 $datos = $objCliente->consultar_cliente($cedula);
 $cliente = $datos['cliente'];
+$facturas = $datos['facturas'];
 $pagos = $datos['pagos'];
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -53,11 +54,40 @@ $pagos = $datos['pagos'];
     </table>
 
     <br />
+    <h3 align="center">Facturas</h3>
+
+    <table width="500" border="1" align="center">
+        <thead>
+            <tr>
+                <th>Número de Factura</th>
+                <th>Fecha</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php if (count($facturas) > 0): ?>
+            <?php foreach ($facturas as $factura): ?>
+            <tr>
+                <td align="center"><?php echo htmlspecialchars($factura['numero_factura']); ?></td>
+                <td align="center"><?php echo htmlspecialchars($factura['fecha']); ?></td>
+                <td align="right">$<?php echo number_format($factura['total'], 2); ?></td>
+            </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="3" align="center">Este cliente no tiene facturas registradas.</td>
+            </tr>
+        <?php endif; ?>
+        </tbody>
+    </table>
+
+    <br />
     <h3 align="center">Historial de Pagos</h3>
 
     <table width="500" border="1" align="center">
         <thead>
             <tr>
+                <th>Factura</th>
                 <th>Valor Pagado</th>
                 <th>Fecha</th>
             </tr>
@@ -66,13 +96,14 @@ $pagos = $datos['pagos'];
         <?php if (count($pagos) > 0): ?>
             <?php foreach ($pagos as $pago): ?>
             <tr>
+                <td align="center"><?php echo htmlspecialchars($pago['numero_factura']); ?></td>
                 <td align="center">$<?php echo htmlspecialchars($pago['valor_pagado']); ?></td>
                 <td align="center"><?php echo htmlspecialchars($pago['fecha']); ?></td>
             </tr>
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="2" align="center">No se encontraron pagos registrados.</td>
+                <td colspan="3" align="center">No se encontraron pagos registrados.</td>
             </tr>
         <?php endif; ?>
         </tbody>

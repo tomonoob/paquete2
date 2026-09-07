@@ -13,6 +13,9 @@
     <td width="205" align="center"> <h2>Productos de una Factura</h2></td>
   </tr>
   <tr>
+    <td align="center"><label><a href="registrarfactura.php">Registrar Factura</a></label></td>
+  </tr>
+  <tr>
     <td align="center"><label><a href="registrarproducto.php">Registrarse</a></label></td>
   </tr>
   <tr>
@@ -23,6 +26,9 @@
   </tr>
   <tr>
     <td align="center"><label><a href="ingresar_id_producto.php">Actualizar</a></label></td>
+  </tr>
+  <tr>
+    <td align="center"><label><a href="registrarpago.php">Registrar Pago</a></label></td>
   </tr>
 </table>
 <p></p>

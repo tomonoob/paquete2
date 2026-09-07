@@ -6,6 +6,12 @@ class cProducto
     {
         global $conexion;
         include_once("conexion.php");
+        include_once(__DIR__ . "/ServiciosFactura.php");
+
+        $objFactura = new cFactura;
+        if (!$objFactura->obtener_factura($numero_factura)) {
+            return "La factura '$numero_factura' no existe. Registrala primero.";
+        }
 
         $stmt = $conexion->prepare(
             "INSERT INTO productos_factura (numero_factura, nombre_producto, cantidad, precio_unitario)

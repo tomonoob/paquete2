@@ -8,6 +8,7 @@
 <body>
 <form id="form1" name="form1" method="post" action="recibe_producto.php">
   <p align="center">REGISTRAR PRODUCTO EN UNA FACTURA</p>
+  <p align="center"><small>La factura debe existir. Si todavía no la creaste, <a href="registrarfactura.php">registrala primero</a>.</small></p>
   <table width="347" border="1" align="center">
     <tr>
       <td width="150">Número de Factura</td>

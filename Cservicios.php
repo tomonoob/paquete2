@@ -17,7 +17,8 @@ class cCliente
         return $ok ? true : $error;
     }
 
-    // Devuelve un cliente y su historial de pagos ('cliente' => array|null, 'pagos' => array)
+    // Devuelve un cliente con sus facturas y su historial de pagos
+    // ('cliente' => array|null, 'facturas' => array, 'pagos' => array)
     function consultar_cliente($cedula)
     {
         global $conexion;
@@ -29,9 +30,21 @@ class cCliente
         $cliente = $stmt->get_result()->fetch_assoc();
         $stmt->close();
 
+        $facturas = [];
         $pagos = [];
         if ($cliente) {
-            $stmt = $conexion->prepare("SELECT valor_pagado, fecha FROM movimientos WHERE cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci");
+            include_once(__DIR__ . "/productos_factura/ServiciosFactura.php");
+            $objFactura = new cFactura;
+            $facturas = $objFactura->listar_por_cliente($cedula);
+
+            // Los pagos se guardan por factura; se unen a través de facturas.cedula
+            $stmt = $conexion->prepare(
+                "SELECT m.valor_pagado, m.fecha, m.numero_factura
+                 FROM movimientos m
+                 JOIN facturas f ON f.numero_factura = m.numero_factura
+                 WHERE f.cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci
+                 ORDER BY m.fecha DESC"
+            );
             $stmt->bind_param("s", $cedula);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -41,7 +54,7 @@ class cCliente
             $stmt->close();
         }
 
-        return ['cliente' => $cliente, 'pagos' => $pagos];
+        return ['cliente' => $cliente, 'facturas' => $facturas, 'pagos' => $pagos];
     }
 
     // Actualiza los datos de un cliente existente identificado por su cédula
