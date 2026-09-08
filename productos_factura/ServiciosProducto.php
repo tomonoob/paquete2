@@ -30,7 +30,7 @@ class cProducto
         global $conexion;
         include_once("conexion.php");
 
-        $result = $conexion->query("SELECT * FROM productos_factura ORDER BY numero_factura, id");
+        $result = $conexion->query("SELECT * FROM productos_factura ORDER BY id");
 
         $productos = [];
         while ($row = $result->fetch_assoc()) {
