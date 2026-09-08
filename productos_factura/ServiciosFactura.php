@@ -6,14 +6,9 @@ class cFactura
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare("INSERT INTO facturas (numero_factura, cedula) VALUES (?, ?)");
-        $stmt->bind_param("ss", $numero_factura, $cedula);
-        $ok = $stmt->execute();
-        $error = $stmt->error;
+        $r = llamar_procedimiento($conexion, "CALL crear_factura(?,?)", [$numero_factura, $cedula]);
 
-        $stmt->close();
-
-        return $ok ? true : $error;
+        return $r->ok ? true : $r->error;
     }
 
     function obtener_factura($numero_factura)
@@ -21,16 +16,8 @@ class cFactura
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare(
-            "SELECT f.numero_factura, f.cedula, f.fecha, c.nombres, c.apellidos
-             FROM facturas f
-             LEFT JOIN clientes c ON c.cedula COLLATE utf8mb4_general_ci = f.cedula COLLATE utf8mb4_general_ci
-             WHERE f.numero_factura = ?"
-        );
-        $stmt->bind_param("s", $numero_factura);
-        $stmt->execute();
-        $factura = $stmt->get_result()->fetch_assoc();
-        $stmt->close();
+        $r = llamar_procedimiento($conexion, "CALL obtener_factura(?)", [$numero_factura]);
+        $factura = $r->result ? $r->result->fetch_assoc() : null;
 
         return $factura ?: null;
     }
@@ -40,24 +27,12 @@ class cFactura
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare(
-            "SELECT f.numero_factura, f.fecha,
-                    COALESCE(SUM(p.cantidad * p.precio_unitario), 0) AS total
-             FROM facturas f
-             LEFT JOIN productos_factura p ON p.numero_factura = f.numero_factura
-             WHERE f.cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci
-             GROUP BY f.numero_factura, f.fecha
-             ORDER BY f.fecha DESC"
-        );
-        $stmt->bind_param("s", $cedula);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $r = llamar_procedimiento($conexion, "CALL listar_facturas_cliente(?)", [$cedula]);
 
         $facturas = [];
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $r->result->fetch_assoc()) {
             $facturas[] = $row;
         }
-        $stmt->close();
 
         return $facturas;
     }
@@ -67,13 +42,8 @@ class cFactura
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare("INSERT INTO movimientos (numero_factura, valor_pagado) VALUES (?, ?)");
-        $stmt->bind_param("sd", $numero_factura, $valor_pagado);
-        $ok = $stmt->execute();
-        $error = $stmt->error;
+        $r = llamar_procedimiento($conexion, "CALL registrar_pago(?,?)", [$numero_factura, $valor_pagado]);
 
-        $stmt->close();
-
-        return $ok ? true : $error;
+        return $r->ok ? true : $r->error;
     }
 }

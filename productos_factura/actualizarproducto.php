@@ -1,9 +1,9 @@
 <?php
 include_once("ServiciosProducto.php");
-include_once("conexion.php");
 
 $mensaje = "";
 $producto = null;
+$objProducto = new cProducto;
 
 if (isset($_POST['btn_guardar'])) {
     $id              = (int)$_POST['id'];
@@ -12,7 +12,6 @@ if (isset($_POST['btn_guardar'])) {
     $cantidad        = (int)$_POST['cantidad'];
     $precio_unitario = (float)$_POST['precio_unitario'];
 
-    $objProducto = new cProducto;
     $resultado = $objProducto->actualizar_producto($id, $numero_factura, $nombre_producto, $cantidad, $precio_unitario);
 
     if ($resultado === true) {
@@ -21,19 +20,11 @@ if (isset($_POST['btn_guardar'])) {
         $mensaje = "<p style='color: red; text-align: center;'>Error al actualizar: " . htmlspecialchars($resultado) . "</p>";
     }
 
-    $stmt = $conexion->prepare("SELECT * FROM productos_factura WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $producto = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    $producto = $objProducto->obtener_producto($id);
 }
 else if (isset($_POST['id']) && !empty($_POST['id'])) {
     $id = (int)$_POST['id'];
-    $stmt = $conexion->prepare("SELECT * FROM productos_factura WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $producto = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    $producto = $objProducto->obtener_producto($id);
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

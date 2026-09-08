@@ -12,17 +12,13 @@ class cProducto
             return "La factura '$numero_factura' no existe. Registrala primero.";
         }
 
-        $stmt = $conexion->prepare(
-            "INSERT INTO productos_factura (numero_factura, nombre_producto, cantidad, precio_unitario)
-             VALUES (?, ?, ?, ?)"
+        $r = llamar_procedimiento(
+            $conexion,
+            "CALL insertar_producto_factura(?,?,?,?)",
+            [$numero_factura, $nombre_producto, $cantidad, $precio_unitario]
         );
-        $stmt->bind_param("ssid", $numero_factura, $nombre_producto, $cantidad, $precio_unitario);
-        $ok = $stmt->execute();
-        $error = $stmt->error;
 
-        $stmt->close();
-
-        return $ok ? true : $error;
+        return $r->ok ? true : $r->error;
     }
 
     function mostrar_todos()
@@ -30,10 +26,10 @@ class cProducto
         global $conexion;
         include_once("conexion.php");
 
-        $result = $conexion->query("SELECT * FROM productos_factura ORDER BY id");
+        $r = llamar_procedimiento($conexion, "CALL mostrar_todos_productos()");
 
         $productos = [];
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $r->result->fetch_assoc()) {
             $productos[] = $row;
         }
 
@@ -45,20 +41,24 @@ class cProducto
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare(
-            "SELECT * FROM productos_factura WHERE numero_factura = ? ORDER BY id"
-        );
-        $stmt->bind_param("s", $numero_factura);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $r = llamar_procedimiento($conexion, "CALL consultar_productos_por_factura(?)", [$numero_factura]);
 
         $productos = [];
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $r->result->fetch_assoc()) {
             $productos[] = $row;
         }
 
-        $stmt->close();
         return $productos;
+    }
+
+    function obtener_producto($id)
+    {
+        global $conexion;
+        include_once("conexion.php");
+
+        $r = llamar_procedimiento($conexion, "CALL mostrar_producto_por_id(?)", [$id]);
+
+        return $r->result ? $r->result->fetch_assoc() : null;
     }
 
     function actualizar_producto($id, $numero_factura, $nombre_producto, $cantidad, $precio_unitario)
@@ -66,17 +66,12 @@ class cProducto
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare(
-            "UPDATE productos_factura
-             SET numero_factura = ?, nombre_producto = ?, cantidad = ?, precio_unitario = ?
-             WHERE id = ?"
+        $r = llamar_procedimiento(
+            $conexion,
+            "CALL actualizar_producto_factura(?,?,?,?,?)",
+            [$id, $numero_factura, $nombre_producto, $cantidad, $precio_unitario]
         );
-        $stmt->bind_param("ssidi", $numero_factura, $nombre_producto, $cantidad, $precio_unitario, $id);
-        $ok = $stmt->execute();
-        $error = $conexion->error;
 
-        $stmt->close();
-
-        return $ok ? true : $error;
+        return $r->ok ? true : $r->error;
     }
 }

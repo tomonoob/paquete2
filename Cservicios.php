@@ -6,14 +6,13 @@ class cCliente
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare("CALL insertar_clientes7(?,?,?,?,?,?)");
-        $stmt->bind_param("ssssss", $cedula, $nombres, $apellidos, $direccion, $email, $celular);
-        $ok = $stmt->execute();
-        $error = $stmt->error;
+        $r = llamar_procedimiento(
+            $conexion,
+            "CALL insertar_clientes7(?,?,?,?,?,?)",
+            [$cedula, $nombres, $apellidos, $direccion, $email, $celular]
+        );
 
-        $stmt->close();
-
-        return $ok ? true : $error;
+        return $r->ok ? true : $r->error;
     }
 
     function consultar_cliente($cedula)
@@ -21,11 +20,8 @@ class cCliente
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare("SELECT * FROM clientes WHERE cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci");
-        $stmt->bind_param("s", $cedula);
-        $stmt->execute();
-        $cliente = $stmt->get_result()->fetch_assoc();
-        $stmt->close();
+        $r = llamar_procedimiento($conexion, "CALL mostrar_para_actualizar(?)", [$cedula]);
+        $cliente = $r->result ? $r->result->fetch_assoc() : null;
 
         $facturas = [];
         $pagos = [];
@@ -34,20 +30,10 @@ class cCliente
             $objFactura = new cFactura;
             $facturas = $objFactura->listar_por_cliente($cedula);
 
-            $stmt = $conexion->prepare(
-                "SELECT m.valor_pagado, m.fecha, m.numero_factura
-                 FROM movimientos m
-                 JOIN facturas f ON f.numero_factura = m.numero_factura
-                 WHERE f.cedula COLLATE utf8mb4_general_ci = ? COLLATE utf8mb4_general_ci
-                 ORDER BY m.fecha DESC"
-            );
-            $stmt->bind_param("s", $cedula);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
+            $r = llamar_procedimiento($conexion, "CALL mostrar_pagos(?)", [$cedula]);
+            while ($row = $r->result->fetch_assoc()) {
                 $pagos[] = $row;
             }
-            $stmt->close();
         }
 
         return ['cliente' => $cliente, 'facturas' => $facturas, 'pagos' => $pagos];
@@ -58,14 +44,13 @@ class cCliente
         global $conexion;
         include_once("conexion.php");
 
-        $stmt = $conexion->prepare("UPDATE clientes SET nombres = ?, apellidos = ?, direccion = ?, email = ?, celular = ? WHERE cedula = ?");
-        $stmt->bind_param("ssssss", $nombres, $apellidos, $direccion, $email, $celular, $cedula);
-        $ok = $stmt->execute();
-        $error = $stmt->error;
+        $r = llamar_procedimiento(
+            $conexion,
+            "CALL actualizar_uncliente(?,?,?,?,?,?)",
+            [$cedula, $nombres, $apellidos, $direccion, $email, $celular]
+        );
 
-        $stmt->close();
-
-        return $ok ? true : $error;
+        return $r->ok ? true : $r->error;
     }
 
     function mostrar_todos()
@@ -73,10 +58,10 @@ class cCliente
         global $conexion;
         include_once("conexion.php");
 
-        $result = $conexion->query("SELECT * FROM clientes");
+        $r = llamar_procedimiento($conexion, "CALL mostrar_todos_clientes()");
 
         $clientes = [];
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $r->result->fetch_assoc()) {
             $clientes[] = $row;
         }
 
