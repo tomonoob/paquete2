@@ -16,11 +16,11 @@ if (hash_equals(DEMO_USUARIO, $usuario) && hash_equals(DEMO_PASSWORD, $password)
     iniciar_sesion('demo', -1, demo_nombre());
 }
 
-// Base de datos
+// Base de datos (todo por procedimientos almacenados)
 $hayBD = false; $fila = null;
 if ($db = conectar()) {
     try {
-        $r = llamar_procedimiento($db, 'CALL sp_buscar_cliente(?)', [$usuario]);
+        $r = llamar_procedimiento($db, 'CALL sp_cuenta_buscar_cliente(?)', [$usuario]);
         $fila  = $r->result ? $r->result->fetch_assoc() : null;
         $hayBD = $r->ok;
     } catch (Throwable $ex) {

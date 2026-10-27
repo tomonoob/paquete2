@@ -11,10 +11,8 @@ if ($demo) {
     try {
         $db = conectar();
         if (!$db) throw new RuntimeException('sin conexión');
-        $st = $db->prepare('SELECT fecha, metodo, monto FROM abonos WHERE cliente_id = ? ORDER BY fecha DESC, id DESC');
-        $st->bind_param('i', $_SESSION['cliente_id']);
-        $st->execute();
-        $abonos = $st->get_result()->fetch_all(MYSQLI_ASSOC);
+        $r = llamar_procedimiento($db, 'CALL sp_cuenta_listar_abonos(?)', [$_SESSION['cliente_id']]);
+        $abonos = $r->result ? $r->result->fetch_all(MYSQLI_ASSOC) : [];
     } catch (Throwable $ex) {
         $fallo = true;
     }

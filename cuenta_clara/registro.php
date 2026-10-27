@@ -28,9 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!($db = conectar())) {
         $error = $sinBD;
     } else {
-                try {
+        try {
             $hash = password_hash($pass, PASSWORD_DEFAULT);
-            $r = llamar_procedimiento($db, 'CALL sp_registrar_cliente(?,?,?,?)',
+            $r = llamar_procedimiento($db, 'CALL sp_cuenta_registrar_cliente(?,?,?,?)',
                 [$v['usuario'], $hash, $v['nombres'], $v['apellidos']]);
             $id = $r->result ? (int)($r->result->fetch_assoc()['id'] ?? 0) : 0;
 

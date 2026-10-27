@@ -42,9 +42,9 @@ function demo_nombre(): array {
 function demo_abonos(): array {
     return [
         ['fecha' => '2026-10-20', 'metodo' => 'Transferencia', 'monto' => 150000],
-        ['fecha' => '2026-10-05', 'metodo' => 'Tarjeta',      'monto' => 80000],
+        ['fecha' => '2026-10-05', 'metodo' => 'Efectivo',      'monto' => 80000],
         ['fecha' => '2026-09-18', 'metodo' => 'Nequi',         'monto' => 120000],
-        ['fecha' => '2026-09-02', 'metodo' => 'Tarjeta',      'monto' => 60000],
+        ['fecha' => '2026-09-02', 'metodo' => 'Efectivo',      'monto' => 60000],
         ['fecha' => '2026-08-15', 'metodo' => 'Transferencia', 'monto' => 200000],
         ['fecha' => '2026-08-01', 'metodo' => 'Nequi',         'monto' => 90000],
     ];
