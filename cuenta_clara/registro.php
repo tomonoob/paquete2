@@ -28,23 +28,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!($db = conectar())) {
         $error = $sinBD;
     } else {
-        try {
-            $st = $db->prepare('SELECT id FROM clientes WHERE usuario = ?');
-            $st->bind_param('s', $v['usuario']);
-            $st->execute();
-            if ($st->get_result()->fetch_assoc()) {
+                try {
+            $hash = password_hash($pass, PASSWORD_DEFAULT);
+            $r = llamar_procedimiento($db, 'CALL sp_registrar_cliente(?,?,?,?)',
+                [$v['usuario'], $hash, $v['nombres'], $v['apellidos']]);
+            $id = $r->result ? (int)($r->result->fetch_assoc()['id'] ?? 0) : 0;
+
+            if ($id === 0) {
                 $error = 'Ese nombre de usuario ya está en uso.';
             } else {
-                $hash = password_hash($pass, PASSWORD_DEFAULT);
-                $st = $db->prepare('INSERT INTO clientes (usuario, pwd_hash, nombres, apellidos) VALUES (?,?,?,?)');
-                $st->bind_param('ssss', $v['usuario'], $hash, $v['nombres'], $v['apellidos']);
-                $st->execute();
-                iniciar_sesion('db', (int)$db->insert_id, $v);
+                iniciar_sesion('db', $id, $v);
             }
         } catch (Throwable $ex) {
-            $error = ($ex instanceof mysqli_sql_exception && $ex->getCode() === 1062)
-                ? 'Ese nombre de usuario ya está en uso.'
-                : $sinBD;
+            $error = $sinBD;
         }
     }
 }

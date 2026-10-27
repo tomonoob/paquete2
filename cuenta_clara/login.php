@@ -20,13 +20,11 @@ if (hash_equals(DEMO_USUARIO, $usuario) && hash_equals(DEMO_PASSWORD, $password)
 $hayBD = false; $fila = null;
 if ($db = conectar()) {
     try {
-        $st = $db->prepare('SELECT id, pwd_hash, nombres, apellidos FROM clientes WHERE usuario = ?');
-        $st->bind_param('s', $usuario);
-        $st->execute();
-        $fila = $st->get_result()->fetch_assoc();
-        $hayBD = true;
+        $r = llamar_procedimiento($db, 'CALL sp_buscar_cliente(?)', [$usuario]);
+        $fila  = $r->result ? $r->result->fetch_assoc() : null;
+        $hayBD = $r->ok;
     } catch (Throwable $ex) {
-        $hayBD = false;   // por ejemplo, las tablas no existen todavía
+        $hayBD = false;   // por ejemplo, los procedimientos todavía no existen
     }
 }
 
