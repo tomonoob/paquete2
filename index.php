@@ -39,6 +39,9 @@
     <div align="center">
         <a href="tablas/index.html">Tablas</a>
     </div>
+    <div align="center">
+        <a href="cuenta_clara/index.php">Banco</a>
+    </div>
 </form>
 </body>
 </html>
