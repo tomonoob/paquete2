@@ -1,47 +1,41 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Ing. Antonio Borré B.</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menú principal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="comun/css/menu.css">
 </head>
-<link rel="stylesheet" href="css/estilos.css">
 <body>
-<form id="form1" name="form1" method="post" action="">
-<p>&nbsp;</p>
-<div class="row">
-  <div class="col-4"></div>
-  <div class="col-4"></div>
-  <div class="col-4"></div>
+<main>
+  <h1>¿A qué apartado quieres entrar?</h1>
+  <p class="sub">Elige uno para continuar.</p>
 
-
-</div>
-<table width="215" border="1" align="center">
-  <tr>
-    <td width="205" align="center"> <h2>Menú del Sistema</h2></td>
-    </tr>
-  <tr>
-    <td align="center"><label><a href="registrardatos.php">Registrarse</a></label></td>
-  </tr>
-  <tr>
-    <td align="center"><label><a href="ingresar_cedula.php">Consultar</a></label></td>
-  </tr>
-   <tr>
-     <td align="center"><a href="mostrartodos.php">Mostrar Todo</a> </td>
-   </tr>
-   <tr>
-    <td align="center"><label><a href="ingresar_cedula2.php">Actualizar</a></label></td>
-  </tr>
-  </table>
-<p></p>
-    <div align="center">
-        <a href="productos_factura/index_productos.php">Factura de productos</a>
-    </div>
-    <div align="center">
-        <a href="tablas/index.html">Tablas</a>
-    </div>
-    <div align="center">
-        <a href="cuenta_clara/index.php">Banco</a>
-    </div>
-</form>
+  <nav class="apartados">
+    <a class="apartado" href="clientes/index.php">
+      <h2>Clientes</h2>
+      <p>Registrar, consultar, mostrar y actualizar clientes.</p>
+      <span class="etiqueta">PHP y base de datos</span>
+    </a>
+    <a class="apartado" href="productos_factura/index_productos.php">
+      <h2>Factura de productos</h2>
+      <p>Facturas, productos y pagos de cada cliente.</p>
+      <span class="etiqueta">PHP y base de datos</span>
+    </a>
+    <a class="apartado" href="tablas/index.html">
+      <h2>Tablas</h2>
+      <p>Página estilo periódico con columnas y transformaciones CSS.</p>
+      <span class="etiqueta">Solo HTML y CSS</span>
+    </a>
+    <a class="apartado" href="banco/index.php">
+      <h2>Banco</h2>
+      <p>Ingresa con tu usuario para ver tu saldo y el historial de abonos.</p>
+      <span class="etiqueta">PHP y base de datos</span>
+    </a>
+  </nav>
+</main>
 </body>
 </html>

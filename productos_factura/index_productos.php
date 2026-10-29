@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Productos de una Factura</title>
 </head>
-<link rel="stylesheet" href="../css/estilos.css">
+<link rel="stylesheet" href="../comun/css/estilos.css">
 <body>
 <form id="form1" name="form1" method="post" action="">
 <p>&nbsp;</p>
@@ -33,7 +33,8 @@
 </table>
 <p></p>
     <div align="center">
-        <a href="../index.php">Clientes</a>
+        <a href="../clientes/index.php">Clientes</a> |
+        <a href="../index.php">Menú principal</a>
     </div>
 </form>
 </body>

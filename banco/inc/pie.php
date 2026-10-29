@@ -7,10 +7,10 @@
   <div class="glow"></div>
   <svg class="ring" viewBox="0 0 120 120"><circle class="base" cx="60" cy="60" r="56"/><circle class="arc" cx="60" cy="60" r="56"/></svg>
   <div class="coin">
-    <div class="face"><img src="assets/logo.png" alt=""></div>
-    <div class="face back"><img src="assets/logo.png" alt=""></div>
+    <div class="face"><img src="assets/img/logo.png" alt=""></div>
+    <div class="face back"><img src="assets/img/logo.png" alt=""></div>
   </div>
 </div>
-<script src="assets/app.js"></script>
+<script src="assets/js/app.js"></script>
 </body>
 </html>

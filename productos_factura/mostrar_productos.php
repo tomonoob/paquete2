@@ -16,7 +16,7 @@ unset($row);
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Mostrar Todos los Productos</title>
-<link rel="stylesheet" href="../css/estilos.css">
+<link rel="stylesheet" href="../comun/css/estilos.css">
 </head>
 <body>
     <h1 align="center">Informe de Productos de Todas las Facturas</h1>

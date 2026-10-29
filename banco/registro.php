@@ -1,8 +1,8 @@
 <?php
-require 'config.php';
+require __DIR__ . '/inc/config.php';
 if (isset($_SESSION['modo'])) { header('Location: cuenta.php'); exit; }
 
-$sinBD = 'El registro necesita la base de datos y ahora no hay conexión. Mientras tanto puedes entrar con la cuenta de prueba.';
+$sinBD = 'El registro necesita la base de datos y ahora no está disponible. Revisa su estado en la pantalla de ingreso o entra con la cuenta de prueba.';
 $error = '';
 $v = ['nombres' => '', 'apellidos' => '', 'usuario' => ''];
 
@@ -25,28 +25,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'La contraseña debe tener al menos 6 caracteres.';
     } elseif ($pass !== $conf) {
         $error = 'Las contraseñas no coinciden.';
-    } elseif (!($db = conectar())) {
+    } elseif (!conectar()) {
         $error = $sinBD;
     } else {
-        try {
-            $hash = password_hash($pass, PASSWORD_DEFAULT);
-            $r = llamar_procedimiento($db, 'CALL sp_cuenta_registrar_cliente(?,?,?,?)',
-                [$v['usuario'], $hash, $v['nombres'], $v['apellidos']]);
-            $id = $r->result ? (int)($r->result->fetch_assoc()['id'] ?? 0) : 0;
+        $hash = password_hash($pass, PASSWORD_DEFAULT);
+        $r = cuenta_llamar('CALL sp_cuenta_registrar_cliente(?,?,?,?)',
+            [$v['usuario'], $hash, $v['nombres'], $v['apellidos']]);
+        $id = (int)($r['filas'][0]['id'] ?? 0);
 
-            if ($id === 0) {
-                $error = 'Ese nombre de usuario ya está en uso.';
-            } else {
-                iniciar_sesion('db', $id, $v);
-            }
-        } catch (Throwable $ex) {
+        if (!$r['ok']) {
             $error = $sinBD;
+        } elseif ($id === 0) {
+            $error = 'Ese nombre de usuario ya está en uso.';
+        } else {
+            iniciar_sesion('db', $id, $v);
         }
     }
 }
 
 $titulo = 'Crear cuenta · Cuenta';
-include 'cabecera.php';
+include __DIR__ . '/inc/cabecera.php';
 ?>
 <main>
   <section class="login">
@@ -72,4 +70,4 @@ include 'cabecera.php';
     </form>
     <p class="cambio">¿Ya tienes cuenta? <a href="index.php">Ingresa</a></p>
   </section>
-<?php include 'pie.php'; ?>
+<?php include __DIR__ . '/inc/pie.php'; ?>

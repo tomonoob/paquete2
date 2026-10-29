@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Registrar Producto</title>
 </head>
-<link rel="stylesheet" href="../css/estilos.css">
+<link rel="stylesheet" href="../comun/css/estilos.css">
 <body>
 <form id="form1" name="form1" method="post" action="recibe_producto.php">
   <p align="center">REGISTRAR PRODUCTO EN UNA FACTURA</p>

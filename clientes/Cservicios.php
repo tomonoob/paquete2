@@ -4,7 +4,7 @@ class cCliente
     function registrar_cliente($cedula, $nombres, $apellidos, $direccion, $email, $celular)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento(
             $conexion,
@@ -18,7 +18,7 @@ class cCliente
     function consultar_cliente($cedula)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL mostrar_para_actualizar(?)", [$cedula]);
         $cliente = $r->result ? $r->result->fetch_assoc() : null;
@@ -26,7 +26,7 @@ class cCliente
         $facturas = [];
         $pagos = [];
         if ($cliente) {
-            include_once(__DIR__ . "/productos_factura/ServiciosFactura.php");
+            include_once(__DIR__ . "/../productos_factura/ServiciosFactura.php");
             $objFactura = new cFactura;
             $facturas = $objFactura->listar_por_cliente($cedula);
 
@@ -42,7 +42,7 @@ class cCliente
     function actualizar_cliente($cedula, $nombres, $apellidos, $direccion, $email, $celular)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento(
             $conexion,
@@ -56,7 +56,7 @@ class cCliente
     function mostrar_todos()
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL mostrar_todos_clientes()");
 

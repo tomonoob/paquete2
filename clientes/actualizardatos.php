@@ -33,7 +33,7 @@ else if (isset($_POST['cedula']) && !empty($_POST['cedula'])) {
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Actualizar Datos del Cliente</title>
-<link rel="stylesheet" href="css/estilos.css">
+<link rel="stylesheet" href="../comun/css/estilos.css">
 </head>
 <body>
 

@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require __DIR__ . '/inc/config.php';
 if (isset($_SESSION['modo'])) { header('Location: cuenta.php'); exit; }
 
 $error  = $_SESSION['error'] ?? '';
@@ -7,7 +7,7 @@ $ultimo = $_SESSION['ultimo_usuario'] ?? '';
 unset($_SESSION['error'], $_SESSION['ultimo_usuario']);
 
 $titulo = 'Ingresar · Cuenta';
-include 'cabecera.php';
+include __DIR__ . '/inc/cabecera.php';
 ?>
 <main>
   <section class="login">
@@ -31,5 +31,6 @@ include 'cabecera.php';
       <p>Usuario: <code><?= e(DEMO_USUARIO) ?></code> · Contraseña: <code><?= e(DEMO_PASSWORD) ?></code></p>
       <button class="ghost" id="usarDemo" type="button" data-u="<?= e(DEMO_USUARIO) ?>" data-p="<?= e(DEMO_PASSWORD) ?>">Usar esta cuenta</button>
     </div>
+    <p class="cambio"><a href="estado.php">Estado de la base de datos</a></p>
   </section>
-<?php include 'pie.php'; ?>
+<?php include __DIR__ . '/inc/pie.php'; ?>

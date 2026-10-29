@@ -5,6 +5,19 @@
 // rompería silenciosamente todos los bloques if/else de este proyecto.
 mysqli_report(MYSQLI_REPORT_OFF);
 
+// Si DB_PASSWORD no llegó por variable de entorno (por ejemplo, al probar sin Docker),
+// se lee del archivo .env de la raíz del proyecto.
+$valorClave = getenv('DB_PASSWORD');
+if (($valorClave === false || $valorClave === '') && is_readable(dirname(__DIR__) . '/.env')) {
+    foreach (file(dirname(__DIR__) . '/.env', FILE_IGNORE_NEW_LINES) as $lineaEnv) {
+        $lineaEnv = trim($lineaEnv);
+        if (strpos($lineaEnv, 'DB_PASSWORD=') === 0) {
+            putenv('DB_PASSWORD=' . trim(substr($lineaEnv, 12), " \t\"'"));
+            break;
+        }
+    }
+}
+
 $host = 'brayanrm-computacionmoviltarea.d.aivencloud.com';
 $port = 16993;
 $user = 'avnadmin';

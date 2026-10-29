@@ -9,7 +9,7 @@ $clientes = $objCliente->mostrar_todos();
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Mostrar Todos los Clientes</title>
-<link rel="stylesheet" href="css/estilos.css">
+<link rel="stylesheet" href="../comun/css/estilos.css">
 </head>
 <body>
     <h1 align="center">Informe de Datos Colectivos</h1>

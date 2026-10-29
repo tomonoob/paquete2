@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Consultar Productos de una Factura</title>
-<link rel="stylesheet" href="../css/estilos.css">
+<link rel="stylesheet" href="../comun/css/estilos.css">
 </head>
 <body>
 <form id="form1" name="form1" method="post" action="consultar_productos.php">

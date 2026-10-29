@@ -4,7 +4,7 @@ class cProducto
     function registrar_producto($numero_factura, $nombre_producto, $cantidad, $precio_unitario)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
         include_once(__DIR__ . "/ServiciosFactura.php");
 
         $objFactura = new cFactura;
@@ -24,7 +24,7 @@ class cProducto
     function mostrar_todos()
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL mostrar_todos_productos()");
 
@@ -39,7 +39,7 @@ class cProducto
     function consultar_por_factura($numero_factura)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL consultar_productos_por_factura(?)", [$numero_factura]);
 
@@ -54,7 +54,7 @@ class cProducto
     function obtener_producto($id)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL mostrar_producto_por_id(?)", [$id]);
 
@@ -64,7 +64,7 @@ class cProducto
     function actualizar_producto($id, $numero_factura, $nombre_producto, $cantidad, $precio_unitario)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento(
             $conexion,

@@ -18,7 +18,7 @@ $pagos = $datos['pagos'];
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Resultado de la Consulta</title>
-<link rel="stylesheet" href="css/estilos.css">
+<link rel="stylesheet" href="../comun/css/estilos.css">
 </head>
 <body>
 

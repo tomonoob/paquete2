@@ -4,7 +4,7 @@ class cFactura
     function crear_factura($numero_factura, $cedula)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL crear_factura(?,?)", [$numero_factura, $cedula]);
 
@@ -14,7 +14,7 @@ class cFactura
     function obtener_factura($numero_factura)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL obtener_factura(?)", [$numero_factura]);
         $factura = $r->result ? $r->result->fetch_assoc() : null;
@@ -25,7 +25,7 @@ class cFactura
     function listar_por_cliente($cedula)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL listar_facturas_cliente(?)", [$cedula]);
 
@@ -40,7 +40,7 @@ class cFactura
     function registrar_pago($numero_factura, $valor_pagado)
     {
         global $conexion;
-        include_once("conexion.php");
+        include_once(__DIR__ . "/../comun/conexion.php");
 
         $r = llamar_procedimiento($conexion, "CALL registrar_pago(?,?)", [$numero_factura, $valor_pagado]);
 

@@ -103,3 +103,29 @@ input{font-size:16px}
   .list .v{grid-column:2;grid-row:1 / span 2}
 }
 @media (max-width:380px){#who span{display:none}}
+
+/* Estado de la base de datos */
+.estados{list-style:none;margin:0 0 20px;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.estados li{display:flex;justify-content:space-between;gap:12px;padding:14px 16px;font-size:15px}
+.estados li+li{border-top:1px solid var(--line)}
+.estados span{text-align:right;font-weight:600}
+.estados .bien span{color:var(--verde)}
+.estados .mal span{color:var(--bad)}
+.aviso.ok{border-color:var(--verde)}
+
+/* Consignar y retirar */
+select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:16px;min-height:44px}
+select:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.acciones{display:flex;gap:12px;margin-top:20px}
+.acciones a{flex:1;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:10px;font-weight:600;text-decoration:none}
+.acc-dep{background:var(--orange);color:var(--ink)}
+.acc-dep:hover{background:#FBAE6E}
+.acc-ret{border:1px solid rgba(251,243,217,.55);color:var(--cream)}
+.acc-ret:hover{background:rgba(251,243,217,.12)}
+.acciones a:focus-visible{outline:3px solid var(--cream);outline-offset:2px}
+.list li{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mov b{display:block}
+.mov small{color:var(--muted);font-size:14px}
+.monto{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.monto.mas{color:var(--verde)}
+.monto.menos{color:var(--bad)}

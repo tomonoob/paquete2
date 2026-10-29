@@ -1,38 +1,15 @@
 <?php
+session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax']);
 session_start();
 
-/* La conexión a la base de datos viene de ../conexion.php (la carpeta de atrás).
-   Si ese archivo no existe, falta DB_PASSWORD o no se puede conectar, la página funciona
-   igual en modo de prueba: solo entra la cuenta demo (usuario "demo", contraseña "1234"). */
+date_default_timezone_set('America/Bogota');
+
+require_once __DIR__ . '/db.php';
+
+/* Si no hay conexión con la base de datos, la página funciona igual en modo de prueba:
+   solo entra la cuenta demo (usuario "demo", contraseña "1234"). */
 const DEMO_USUARIO  = 'demo';
 const DEMO_PASSWORD = '1234';
-
-// Devuelve la conexión de ../conexion.php o null si no hay base de datos (nunca lanza error).
-function conectar(): ?mysqli {
-    static $db = false;                 // se conecta una sola vez por visita
-    if ($db !== false) return $db;
-    $db = null;
-
-    $archivo = __DIR__ . '/../conexion.php';
-    $clave = getenv('DB_PASSWORD');
-    if (!is_file($archivo) || $clave === false || $clave === '') return $db;   // conexion.php haría die()
-
-    try {
-        ini_set('mysqli.connect_timeout', '3');
-        if (!defined('CONEXION_SILENCIOSA')) define('CONEXION_SILENCIOSA', true);
-        $conexion = null;
-        $nivel = error_reporting(0);
-        include $archivo;               // define $conexion
-        error_reporting($nivel);
-        if ($conexion instanceof mysqli) {
-            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);   // conexion.php lo apaga; aquí usamos excepciones
-            $db = $conexion;
-        }
-    } catch (Throwable $ex) {
-        $db = null;
-    }
-    return $db;
-}
 
 // Datos de la cuenta de prueba (no necesitan base de datos).
 function demo_nombre(): array {
@@ -60,7 +37,7 @@ function pesos($n): string {
 
 function fecha_corta(string $f): string {
     static $m = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-    $d = new DateTime($f);
+    try { $d = new DateTime($f); } catch (Throwable $ex) { return $f; }
     return $d->format('j') . ' ' . $m[(int)$d->format('n') - 1] . ' ' . $d->format('Y');
 }
 
@@ -75,3 +52,5 @@ function iniciar_sesion(string $modo, int $id, array $n): void {
     header('Location: cuenta.php');
     exit;
 }
+
+require_once __DIR__ . '/movimientos.php';
