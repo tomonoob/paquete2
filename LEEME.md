@@ -1,6 +1,4 @@
-# Paquete 2
 
-Menú principal en `index.php`. Cada apartado vive en su propia carpeta:
 
 ```
 index.php            Menú principal (elige el apartado)
@@ -19,5 +17,3 @@ sql/                 Scripts SQL (no se copian a la imagen de Docker)
 
 ## Base de datos
 - La contraseña va en la variable de entorno `DB_PASSWORD`. Si no existe, `comun/conexion.php` la lee del archivo `.env` de la raíz.
-- Banco funciona aunque no haya base de datos: la cuenta de prueba es usuario `demo`, contraseña `1234`.
-- Si Banco no conecta, abre `banco/estado.php`: dice si falla la conexión o si faltan las tablas, y las crea con un botón.
