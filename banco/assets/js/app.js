@@ -4,8 +4,8 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const logo = $('#logo'), slot = $('#slot'), loader = $('#loader'), SIZE = 120;
   const sinLoader = document.documentElement.classList.contains('sin-loader');
+  
   let docked = false;
-
   const place = (x, y, s) => logo.style.transform = `translate(${x}px,${y}px) scale(${s})`;
   const center = () => place(innerWidth / 2 - SIZE / 2, innerHeight / 2 - SIZE / 2 - 20, 1);
   const toSlot = () => { const r = slot.getBoundingClientRect(); place(r.left, r.top, r.width / SIZE); };
