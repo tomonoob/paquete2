@@ -27,7 +27,6 @@
   } else {
     center();
     Promise.all([document.fonts.ready, sleep(reduce ? 400 : 2500)]).then(() => {
-      try { sessionStorage.setItem('cc_loader', '1'); } catch (e) {}
       dock(true);
     });
   }
