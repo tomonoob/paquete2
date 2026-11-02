@@ -1,67 +1,88 @@
-(() => {
-  const $ = s => document.querySelector(s);
-  const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const logo = $('#logo'), slot = $('#slot'), loader = $('#loader'), SIZE = 120;
-  const sinLoader = document.documentElement.classList.contains('sin-loader');
-  
-  let docked = false;
-  const place = (x, y, s) => logo.style.transform = `translate(${x}px,${y}px) scale(${s})`;
-  const center = () => place(innerWidth / 2 - SIZE / 2, innerHeight / 2 - SIZE / 2 - 20, 1);
-  const toSlot = () => { const r = slot.getBoundingClientRect(); place(r.left, r.top, r.width / SIZE); };
+var logo = document.getElementById('logo');
+var destino = document.getElementById('destino-logo');
+var pantallaCarga = document.getElementById('pantalla-carga');
+var TAMANO = 120;
+var logoEnEsquina = false;
 
-  // El logo viaja del centro de la pantalla a la cabecera
-  function dock(animar) {
-    docked = true;
-    logo.style.transition = animar && !reduce ? 'transform 1s cubic-bezier(.65,0,.2,1)' : 'none';
-    toSlot();
-    logo.classList.add('docked');
-    loader.classList.add('hide');
-    document.body.classList.add('ready');
-    const u = $('input'); if (u && matchMedia('(pointer: fine)').matches) u.focus({ preventScroll: true });
-    countUp();
-  }
+function moverLogo(x, y, escala) {
+    logo.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + escala + ')';
+}
 
-  if (sinLoader) {
-    dock(false);
-  } else {
-    center();
-    Promise.all([document.fonts.ready, sleep(reduce ? 400 : 2500)]).then(() => {
-      dock(true);
-    });
-  }
+function logoAlCentro() {
+    var x = window.innerWidth / 2 - TAMANO / 2;
+    var y = window.innerHeight / 2 - TAMANO / 2 - 20;
+    moverLogo(x, y, 1);
+}
 
-  addEventListener('resize', () => {
+function logoALaEsquina() {
+    var caja = destino.getBoundingClientRect();
+    moverLogo(caja.left, caja.top, caja.width / TAMANO);
+}
+
+function contarSaldo() {
+    var saldo = document.getElementById('saldo');
+    if (saldo == null) {
+        return;
+    }
+
+    var meta = Number(saldo.dataset.saldo);
+    var actual = 0;
+    var reloj = setInterval(function () {
+        actual = actual + meta / 30;
+        if (actual >= meta) {
+            actual = meta;
+            clearInterval(reloj);
+        }
+        saldo.textContent = '$ ' + Math.round(actual).toLocaleString('es-CO');
+    }, 35);
+}
+
+function mostrarPagina() {
+    logoEnEsquina = true;
+    logoALaEsquina();
+    logo.classList.add('pequeno');
+    pantallaCarga.classList.add('oculta');
+    document.body.classList.add('listo');
+    contarSaldo();
+}
+
+if (document.documentElement.classList.contains('sin-loader')) {
+    mostrarPagina();
+} else {
+    logoAlCentro();
+    setTimeout(function () {
+        logo.style.transition = 'transform 1s';
+        mostrarPagina();
+    }, 2500);
+}
+
+window.onresize = function () {
     logo.style.transition = 'none';
-    docked ? toSlot() : center();
-  });
+    if (logoEnEsquina) {
+        logoALaEsquina();
+    } else {
+        logoAlCentro();
+    }
+};
 
-  // Rellenar la cuenta de prueba
-  const demo = $('#usarDemo');
-  if (demo) demo.onclick = () => {
-    $('#usuario').value = demo.dataset.u;
-    $('#password').value = demo.dataset.p;
-    $('#password').focus();
-  };
+var botonVer = document.getElementById('ver-clave');
+if (botonVer != null) {
+    botonVer.onclick = function () {
+        var campo = document.getElementById('clave');
+        if (campo.type == 'password') {
+            campo.type = 'text';
+            botonVer.textContent = 'Ocultar';
+        } else {
+            campo.type = 'password';
+            botonVer.textContent = 'Mostrar';
+        }
+    };
+}
 
-  // Mostrar / ocultar contraseña
-  const ver = $('#ver');
-  if (ver) ver.onclick = () => {
-    const p = $('#password'), oculto = p.type === 'password';
-    p.type = oculto ? 'text' : 'password';
-    ver.textContent = oculto ? 'Ocultar' : 'Mostrar';
-    ver.setAttribute('aria-label', oculto ? 'Ocultar contraseña' : 'Mostrar contraseña');
-  };
-
-  // El total sube contando desde cero
-  function countUp() {
-    const el = $('#total'); if (!el || reduce) return;
-    const meta = +el.dataset.total, t0 = performance.now(), dur = 1100;
-    const fmt = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
-    (function paso(t) {
-      const p = Math.min((t - t0) / dur, 1);
-      el.textContent = fmt.format(Math.round(meta * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) requestAnimationFrame(paso);
-    })(t0);
-  }
-})();
+var botonDemo = document.getElementById('usar-demo');
+if (botonDemo != null) {
+    botonDemo.onclick = function () {
+        document.getElementById('usuario').value = botonDemo.dataset.usuario;
+        document.getElementById('clave').value = botonDemo.dataset.clave;
+    };
+}

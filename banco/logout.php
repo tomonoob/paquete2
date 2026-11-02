@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/inc/config.php';
-$_SESSION = [];
+require 'inc/funciones.php';
+
 session_destroy();
 header('Location: index.php');

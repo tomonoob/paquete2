@@ -1,58 +1,80 @@
 <?php
-require __DIR__ . '/inc/config.php';
-if (!isset($_SESSION['modo'])) { header('Location: index.php'); exit; }
+require 'inc/funciones.php';
 
-$esRetiro = (($_POST['tipo'] ?? $_GET['tipo'] ?? '') === 'retirar');
-$metodos  = $esRetiro
-    ? ['Cajero automático', 'Oficina', 'Transferencia', 'Nequi']
-    : ['Efectivo', 'Transferencia', 'Nequi'];
-$error = ''; $monto = ''; $metodo = $metodos[0];
+if (!isset($_SESSION['modo'])) {
+    header('Location: index.php');
+    exit;
+}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $monto  = preg_replace('/\s+/', '', (string)($_POST['monto'] ?? ''));
-    $metodo = (string)($_POST['metodo'] ?? '');
+$tipo = 'consignar';
+if (isset($_REQUEST['tipo']) && $_REQUEST['tipo'] == 'retirar') {
+    $tipo = 'retirar';
+}
 
-    if (!in_array($metodo, $metodos, true)) {
+if ($tipo == 'retirar') {
+    $metodos = array('Cajero automático', 'Oficina', 'Transferencia', 'Nequi');
+} else {
+    $metodos = array('Efectivo', 'Transferencia', 'Nequi');
+}
+
+$monto = '';
+$metodo = $metodos[0];
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $monto = trim($_POST['monto']);
+    $metodo = $_POST['metodo'];
+
+    if (!in_array($metodo, $metodos)) {
         $error = 'Elige un método válido.';
-    } elseif (!preg_match('/^[0-9]{1,10}$/', $monto) || (int)$monto <= 0) {
+    } elseif (!ctype_digit($monto) || $monto < 1) {
         $error = 'Escribe un valor entero mayor que cero, solo con números.';
-    } elseif ((int)$monto > 1000000000) {
+    } elseif ($monto > 1000000000) {
         $error = 'El valor máximo por movimiento es ' . pesos(1000000000) . '.';
     } else {
-        $r = mover_dinero($esRetiro ? 'retiro' : 'consignacion', (int)$monto, $metodo);
-        if ($r['ok']) {
-            $_SESSION['aviso'] = $r['msg'];
+        $error = mover_dinero($tipo, (int) $monto, $metodo);
+        if ($error == '') {
             header('Location: cuenta.php');
             exit;
         }
-        $error = $r['msg'];
     }
 }
 
-$m = movimientos_cliente();
-$saldo = saldo_de($m['filas']);
+$saldo = calcular_saldo(obtener_movimientos());
 
-$titulo = ($esRetiro ? 'Retirar' : 'Consignar') . ' · Cuenta';
-include __DIR__ . '/inc/cabecera.php';
+if ($tipo == 'retirar') {
+    $titulo = 'Retirar';
+} else {
+    $titulo = 'Consignar';
+}
+include 'inc/cabecera.php';
 ?>
 <main>
-  <section class="login">
-    <h1><?= $esRetiro ? 'Retirar dinero' : 'Consignar dinero' ?></h1>
-    <p class="sub">Tu saldo actual es <b><?= e(pesos($saldo)) ?></b>.</p>
-    <form action="movimiento.php" method="post">
-      <input type="hidden" name="tipo" value="<?= $esRetiro ? 'retirar' : 'consignar' ?>">
-      <label for="monto">Valor</label>
-      <input id="monto" name="monto" type="number" inputmode="numeric" min="1" max="1000000000" step="1"
-             placeholder="Ej. 50000" value="<?= e($monto) ?>" required>
-      <label for="metodo"><?= $esRetiro ? 'Retirar por' : 'Método de pago' ?></label>
-      <select id="metodo" name="metodo">
-        <?php foreach ($metodos as $op): ?>
-          <option value="<?= e($op) ?>"<?= $op === $metodo ? ' selected' : '' ?>><?= e($op) ?></option>
-        <?php endforeach; ?>
-      </select>
-      <p class="error" role="alert"><?= e($error) ?></p>
-      <button class="primary" type="submit"><?= $esRetiro ? 'Retirar' : 'Consignar' ?></button>
-    </form>
-    <p class="cambio"><a href="cuenta.php">Volver a mi cuenta</a></p>
-  </section>
-<?php include __DIR__ . '/inc/pie.php'; ?>
+    <div class="tarjeta">
+        <?php if ($tipo == 'retirar'): ?>
+            <h1>Retirar dinero</h1>
+        <?php else: ?>
+            <h1>Consignar dinero</h1>
+        <?php endif; ?>
+        <p class="subtitulo">Tu saldo actual es <b><?= pesos($saldo) ?></b>.</p>
+
+        <form method="post" action="movimiento.php">
+            <input type="hidden" name="tipo" value="<?= $tipo ?>">
+
+            <label for="monto">Valor</label>
+            <input type="number" id="monto" name="monto" min="1" max="1000000000" placeholder="Ej. 50000" value="<?= limpiar($monto) ?>" required>
+
+            <label for="metodo">Método</label>
+            <select id="metodo" name="metodo">
+                <?php foreach ($metodos as $opcion): ?>
+                    <option value="<?= limpiar($opcion) ?>" <?php if ($opcion == $metodo) { echo 'selected'; } ?>><?= limpiar($opcion) ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <p class="error"><?= limpiar($error) ?></p>
+            <button type="submit" class="boton"><?= $tipo == 'retirar' ? 'Retirar' : 'Consignar' ?></button>
+        </form>
+
+        <p class="enlace-centro"><a href="cuenta.php">Volver a mi cuenta</a></p>
+    </div>
+<?php include 'inc/pie.php'; ?>
