@@ -55,7 +55,7 @@ include 'inc/cabecera.php';
 ?>
 <main class="contenido">
     <section class="portada">
-        <img class="portada-logo" src="assets/img/logo-512.png" alt="Logo de Banco Aurora" width="88" height="88">
+        <img class="portada-logo" src="assets/img/logo-aurora-512.png" alt="Logo de Aurora" width="104" height="104">
         <p class="eyebrow">Banco digital</p>
         <h1>Tu plata, clara y a mano.</h1>
         <p class="portada-texto">Consulta tu saldo, ahorra y mueve tu dinero en segundos.</p>
@@ -80,17 +80,17 @@ include 'inc/cabecera.php';
         <p class="cambio">¿No tienes cuenta? <a href="registro.php">Crea una</a></p>
     </form>
 
-    <section class="panel panel-demo">
-        <div class="demo-titulo">
-            <span class="punto-ambar" aria-hidden="true"></span>
+    <section class="panel panel-prueba">
+        <div class="prueba-titulo">
+            <span class="punto-aurora" aria-hidden="true"></span>
             <h2>Cuenta de prueba</h2>
         </div>
         <p>Entra con estos datos para conocer la app.</p>
-        <div class="demo-datos">
-            <span>Usuario <b><?= limpiar(BF_DEMO_USUARIO) ?></b></span>
-            <span>Contraseña <b><?= limpiar(BF_DEMO_CLAVE) ?></b></span>
+        <div class="prueba-datos">
+            <span>Usuario <b><?= limpiar(BF_PRUEBA_USUARIO) ?></b></span>
+            <span>Contraseña <b><?= limpiar(BF_PRUEBA_CLAVE) ?></b></span>
         </div>
-        <button type="button" id="usar-demo" class="boton boton-suave" data-usuario="<?= limpiar(BF_DEMO_USUARIO) ?>" data-clave="<?= limpiar(BF_DEMO_CLAVE) ?>">Usar esta cuenta</button>
+        <button type="button" id="usar-prueba" class="boton boton-suave" data-usuario="<?= limpiar(BF_PRUEBA_USUARIO) ?>" data-clave="<?= limpiar(BF_PRUEBA_CLAVE) ?>">Usar esta cuenta</button>
     </section>
 
     <p class="enlace-pie"><a href="estado.php">Estado de la base de datos</a></p>

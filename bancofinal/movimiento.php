@@ -106,7 +106,7 @@ if ($tipo == 'retirar') {
     $titulo = 'Retirar';
     $titulo_pagina = 'Retirar dinero';
     $texto_pagina = 'Saca plata de tu saldo disponible.';
-    $clase_boton = 'boton-coral';
+    $clase_boton = 'boton-retiro';
     $texto_boton = 'Retirar';
 } else {
     $titulo = 'Consignar';

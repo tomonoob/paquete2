@@ -44,6 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
+    if ((int) $id != (int) $_SESSION['cliente_id']) {
+        guardar_aviso('error', 'Solo puedes ahorrar desde tu propia cuenta. Tu ID es ' . (int) $_SESSION['cliente_id'] . '.');
+        guardar_formulario($datos);
+        header('Location: ahorrar.php');
+        exit;
+    }
+
     if (!ctype_digit($valor) || (int) $valor < 1) {
         guardar_aviso('error', 'Escribe un valor entero mayor que cero, solo con números.');
         guardar_formulario($datos);
@@ -65,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
-    $filas = llamar('CALL sp_bf_ahorrar(?,?)', array((int) $id, (int) $valor));
+    $filas = llamar('CALL sp_bf_ahorrar(?,?)', array((int) $_SESSION['cliente_id'], (int) $valor));
 
     if ($filas === false || count($filas) == 0) {
         guardar_aviso('error', 'No pudimos registrar el ahorro. Intenta de nuevo en un momento.');
@@ -77,16 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $resultado = $filas[0]['resultado'];
     $saldo_bd = (int) $filas[0]['saldo'];
     $ahorro_bd = (int) $filas[0]['ahorro'];
-    $es_mio = ((int) $id == (int) $_SESSION['cliente_id']);
 
     if ($resultado == 'ok') {
-        $texto = 'Ahorraste ' . pesos($valor) . '. ';
-
-        if ($es_mio) {
-            $texto = $texto . 'Tu nuevo saldo es ' . pesos($saldo_bd) . ' y tu ahorro es ' . pesos($ahorro_bd) . '.';
-        } else {
-            $texto = $texto . 'El cliente #' . $id . ' ahora tiene un saldo de ' . pesos($saldo_bd) . ' y un ahorro de ' . pesos($ahorro_bd) . '.';
-        }
+        $texto = 'Ahorraste ' . pesos($valor) . '. Tu nuevo saldo es ' . pesos($saldo_bd) . ' y tu ahorro es ' . pesos($ahorro_bd) . '.';
 
         guardar_aviso('ok', $texto);
         header('Location: cuenta.php');
@@ -94,21 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if ($resultado == 'no_existe') {
-        $texto = 'No existe un cliente con el ID ' . $id . '. Revisa el número e intenta de nuevo.';
+        $texto = 'No encontramos tu cuenta. Vuelve a ingresar.';
     } elseif ($resultado == 'valor_invalido') {
         $texto = 'El valor debe ser un número entero mayor que cero.';
     } elseif ($resultado == 'saldo_cero') {
-        if ($es_mio) {
-            $texto = 'No tienes saldo disponible. Consigna primero para poder ahorrar.';
-        } else {
-            $texto = 'El cliente #' . $id . ' no tiene saldo disponible. Debe consignar primero.';
-        }
+        $texto = 'No tienes saldo disponible. Consigna primero para poder ahorrar.';
     } elseif ($resultado == 'saldo_insuficiente') {
-        if ($es_mio) {
-            $texto = 'Saldo insuficiente. Tienes ' . pesos($saldo_bd) . ' disponibles.';
-        } else {
-            $texto = 'Saldo insuficiente. El cliente #' . $id . ' tiene ' . pesos($saldo_bd) . ' disponibles.';
-        }
+        $texto = 'Saldo insuficiente. Tienes ' . pesos($saldo_bd) . ' disponibles.';
     } else {
         $texto = 'No pudimos registrar el ahorro. Intenta de nuevo en un momento.';
     }
@@ -133,7 +125,7 @@ include 'inc/cabecera.php';
     <form class="panel" method="post" action="ahorrar.php">
         <label for="cliente_id">ID del cliente</label>
         <input type="text" id="cliente_id" name="cliente_id" inputmode="numeric" pattern="[0-9]*" value="<?= limpiar($id) ?>" required aria-describedby="ayuda-id">
-        <p class="ayuda" id="ayuda-id">Viene con tu ID. Puedes cambiarlo para ahorrarle a otro cliente.</p>
+        <p class="ayuda" id="ayuda-id">Viene con tu ID. Solo puedes ahorrar desde tu propia cuenta.</p>
 
         <label for="valor">Valor a ahorrar</label>
         <div class="campo-dinero">
@@ -148,6 +140,6 @@ include 'inc/cabecera.php';
             <button type="button" class="chip-valor" data-valor="200000">$ 200.000</button>
         </div>
 
-        <button type="submit" class="boton boton-ambar">Ahorrar</button>
+        <button type="submit" class="boton">Ahorrar</button>
     </form>
 <?php include 'inc/pie.php'; ?>

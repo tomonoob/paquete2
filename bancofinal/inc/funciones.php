@@ -5,8 +5,8 @@ date_default_timezone_set('America/Bogota');
 
 require __DIR__ . '/conexion.php';
 
-define('BF_DEMO_USUARIO', 'demo');
-define('BF_DEMO_CLAVE', '1234');
+define('BF_PRUEBA_USUARIO', 'prueba1');
+define('BF_PRUEBA_CLAVE', '123456');
 define('BF_MAXIMO', 1000000000);
 define('BF_SIN_CONEXION', 'No hay conexión con la base de datos. Intenta de nuevo en un momento.');
 

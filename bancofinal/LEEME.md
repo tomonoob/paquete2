@@ -1,4 +1,4 @@
-# Banco Aurora · App de cuenta y ahorro
+# Aurora · App de cuenta y ahorro
 
 Trabajo final de Computación Móvil. App PHP 8.2 procedural pensada para abrirse
 dentro de un WebView en el celular. Tiene su propio código, su propio CSS/JS y sus
@@ -12,7 +12,7 @@ bancofinal/
   index.php          Ingreso (login) y cuenta de prueba
   registro.php       Crear cuenta
   cuenta.php         Saldo, ahorro, acciones e historial
-  ahorrar.php        Pasar plata del saldo al ahorro
+  ahorrar.php        Pasar plata del saldo al ahorro (solo mi cuenta)
   movimiento.php     Consignar o retirar (?tipo=consignar|retirar)
   estado.php         Diagnóstico de la base de datos (solo lectura)
   logout.php         Cierra la sesión
@@ -22,21 +22,28 @@ bancofinal/
   inc/pie.php        Pie de página y script
   assets/css/estilos.css
   assets/js/app.js
-  assets/img/logo.png, logo-512.png
-  sql/bancofinal.sql
+  assets/img/logo-aurora.png       Logo original del equipo
+  assets/img/logo-aurora-512.png   Logo liviano para login y pantalla de carga
+  assets/img/logo-simbolo.png      Solo la montaña (encabezado y favicon)
+  sql/bancofinal.sql               Tablas y procedimientos
+  sql/usuarios_prueba.sql          Usuarios prueba1, prueba2 y prueba3
 ```
 
-## 1. Crear las tablas y procedimientos
+## 1. Crear las tablas, procedimientos y usuarios de prueba
 
-1. Abre MySQL Workbench y conéctate a la base de datos del proyecto.
-2. Abre el archivo `bancofinal/sql/bancofinal.sql`.
-3. Ejecuta todo el script (rayo con el nombre del archivo, o Ctrl+Shift+Enter).
-4. Verifica que aparezcan `bf_usuarios`, `ahorros`, `bf_historial` y los siete
-   procedimientos `sp_bf_*`.
+En MySQL Workbench, conéctate a la base de datos del proyecto y ejecuta los dos
+scripts **en este orden**:
 
-El script se puede correr varias veces: crea las tablas solo si no existen y
-reemplaza únicamente los procedimientos `sp_bf_`. No borra tablas ni toca nada
-del resto del proyecto.
+1. Abre `bancofinal/sql/bancofinal.sql` y ejecuta todo el script (rayo con el
+   nombre del archivo, o Ctrl+Shift+Enter). Crea las tablas y los procedimientos.
+2. Abre `bancofinal/sql/usuarios_prueba.sql` y ejecútalo completo. Crea los
+   usuarios `prueba1`, `prueba2` y `prueba3` llamando a `sp_bf_registrar`, así que
+   cada uno queda también con su fila en `ahorros` y su saldo inicial.
+
+Los dos scripts se pueden correr varias veces sin error: las tablas se crean solo
+si no existen, los procedimientos `sp_bf_` se reemplazan y los usuarios que ya
+existen devuelven id 0 sin duplicarse. Ningún script borra tablas ni toca otras
+tablas del proyecto.
 
 ## 2. Contraseña de la base de datos
 
@@ -59,21 +66,21 @@ php -S 127.0.0.1:8000 -t .
 Luego abre `http://127.0.0.1:8000/bancofinal/index.php`. También funciona con el
 Dockerfile del proyecto (el document root ya es la raíz del repositorio).
 
-Necesita la extensión `mysqli` de PHP.
+Necesita las extensiones `mysqli` y `mbstring` de PHP.
 
 ## 4. Cuenta de prueba
 
-El login trae una tarjeta con el usuario `demo` y la contraseña `1234`, y un botón
-«Usar esta cuenta» que llena los campos. Esa cuenta es un usuario normal: créala
-una sola vez desde `registro.php` con usuario `demo` y contraseña `1234`. Si no
-existe, el botón llena los datos pero el ingreso mostrará «Usuario o contraseña
-incorrectos».
+El login trae una tarjeta con el usuario `prueba1` y la contraseña `123456`, y un
+botón «Usar esta cuenta» que llena los campos. Es un usuario normal de la base de
+datos, creado por `usuarios_prueba.sql`. También puedes entrar con `prueba2` o
+`prueba3` usando la misma contraseña.
 
 ## 5. Cómo funciona el dinero
 
 - Al registrarse, cada cliente recibe `$ 500.000` de saldo y `$ 0` de ahorro.
 - **Ahorrar** pasa plata del saldo al ahorro (baja el saldo, sube el ahorro).
-  El formulario permite escribir el ID de otro cliente existente.
+  Solo funciona con la cuenta de la sesión: si escribes otro ID, la app no llama
+  al procedimiento y avisa «Solo puedes ahorrar desde tu propia cuenta…».
 - **Consignar** suma plata al saldo.
 - **Retirar** baja el saldo; el ahorro no se toca.
 - Cada operación queda en `bf_historial` y se ve en «Mi cuenta» (máximo 50,
@@ -94,15 +101,17 @@ con la base de datos. Intenta de nuevo en un momento.».
 - Todos los enlaces son relativos y no hay `target="_blank"`.
 - Nada depende de `hover`: los estilos de hover están dentro de `@media (hover: hover)`.
 - Después de cada POST se redirige (PRG), así el botón «atrás» no reenvía el formulario.
-- La pantalla de carga dura ~1,1 s y solo sale la primera vez de la sesión del
+- La pantalla de carga dura ~1 s y solo sale la primera vez de la sesión del
   navegador (se guarda en `sessionStorage`), no en cada página.
 - Respeta `prefers-reduced-motion`.
 
 ## 8. Pruebas manuales
 
-1. **Caso normal:** registrarse, ver saldo `$ 500.000`, consignar `$ 100.000`,
-   ahorrar `$ 50.000`, retirar `$ 30.000` y revisar el historial.
-2. **ID inexistente:** en Ahorrar, ID `999` → «No existe un cliente con el ID 999».
+1. **Caso normal:** entrar con `prueba1` / `123456`, ver saldo `$ 500.000`,
+   consignar `$ 100.000`, ahorrar `$ 50.000`, retirar `$ 30.000` y revisar el
+   historial.
+2. **ID de otro cliente:** en Ahorrar escribir otro ID (por ejemplo `2` o `999`)
+   → «Solo puedes ahorrar desde tu propia cuenta. Tu ID es 1.» (o el ID real).
 3. **Saldo en cero:** retirar todo el saldo y entrar a Ahorrar o Retirar → aviso
    «No tienes saldo disponible…».
 4. **Valor mayor al saldo:** retirar o ahorrar más de lo disponible → «Saldo

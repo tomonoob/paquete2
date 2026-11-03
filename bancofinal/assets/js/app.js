@@ -11,7 +11,7 @@ function ocultarCarga() {
 
     setTimeout(function () {
         raiz.classList.remove('con-carga');
-    }, 380);
+    }, 300);
 }
 
 if (raiz.classList.contains('con-carga')) {
@@ -21,10 +21,14 @@ if (raiz.classList.contains('con-carga')) {
     }
 
     if (reducirMovimiento) {
-        setTimeout(ocultarCarga, 250);
+        setTimeout(ocultarCarga, 200);
     } else {
-        setTimeout(ocultarCarga, 1150);
+        setTimeout(ocultarCarga, 750);
     }
+}
+
+function formatearPesos(numero) {
+    return '$ ' + Math.round(numero).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 var saldo = document.getElementById('saldo');
@@ -33,15 +37,15 @@ if (saldo != null && !reducirMovimiento) {
 
     if (meta > 0) {
         var actual = 0;
-        var paso = meta / 24;
+        var paso = meta / 22;
         var reloj = setInterval(function () {
             actual = actual + paso;
             if (actual >= meta) {
                 actual = meta;
                 clearInterval(reloj);
             }
-            saldo.textContent = '$ ' + Math.round(actual).toLocaleString('es-CO');
-        }, 30);
+            saldo.textContent = formatearPesos(actual);
+        }, 28);
     }
 }
 
@@ -63,9 +67,9 @@ for (var i = 0; i < botonesVer.length; i++) {
     };
 }
 
-var botonDemo = document.getElementById('usar-demo');
-if (botonDemo != null) {
-    botonDemo.onclick = function () {
+var botonPrueba = document.getElementById('usar-prueba');
+if (botonPrueba != null) {
+    botonPrueba.onclick = function () {
         var usuario = document.getElementById('usuario');
         var clave = document.getElementById('clave');
 

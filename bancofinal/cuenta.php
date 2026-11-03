@@ -26,7 +26,8 @@ if ($historial !== false) {
     $cantidad = count($historial);
 }
 
-$inicial = substr($_SESSION['primer_nombre'], 0, 1);
+$inicial = mb_substr($_SESSION['primer_nombre'], 0, 1, 'UTF-8');
+$inicial = mb_strtoupper($inicial, 'UTF-8');
 if ($inicial == '') {
     $inicial = 'A';
 }
@@ -82,15 +83,15 @@ include 'inc/cabecera.php';
 
         <nav class="acciones" aria-label="Acciones de tu cuenta">
             <a class="accion" href="ahorrar.php">
-                <span class="accion-icono icono-ambar"><?= icono_movimiento('ahorro') ?></span>
+                <span class="accion-icono icono-ahorro"><?= icono_movimiento('ahorro') ?></span>
                 <span>Ahorrar</span>
             </a>
             <a class="accion" href="movimiento.php?tipo=consignar">
-                <span class="accion-icono icono-verde"><?= icono_movimiento('consignacion') ?></span>
+                <span class="accion-icono icono-consignacion"><?= icono_movimiento('consignacion') ?></span>
                 <span>Consignar</span>
             </a>
             <a class="accion" href="movimiento.php?tipo=retirar">
-                <span class="accion-icono icono-rojo"><?= icono_movimiento('retiro') ?></span>
+                <span class="accion-icono icono-retiro"><?= icono_movimiento('retiro') ?></span>
                 <span>Retirar</span>
             </a>
         </nav>

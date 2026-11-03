@@ -45,7 +45,7 @@ include 'inc/cabecera.php';
     <a class="volver" href="<?= $volver ?>">← <?= $texto_volver ?></a>
 
     <h1>Estado de la base de datos</h1>
-    <p class="subtitulo">Así está la conexión de Banco Aurora en este momento.</p>
+    <p class="subtitulo">Así está la conexión de Aurora en este momento.</p>
 
     <ul class="estados">
         <?php if ($conectado): ?>
