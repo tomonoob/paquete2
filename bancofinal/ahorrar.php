@@ -5,12 +5,8 @@ exigir_sesion();
 $aviso = tomar_aviso();
 $formulario = tomar_formulario();
 
-$id = $_SESSION['cliente_id'];
 $valor = '';
 
-if (isset($formulario['cliente_id'])) {
-    $id = $formulario['cliente_id'];
-}
 if (isset($formulario['valor'])) {
     $valor = $formulario['valor'];
 }
@@ -25,31 +21,12 @@ if ($cuenta !== false && count($cuenta) > 0) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = '';
-    if (isset($_POST['cliente_id'])) {
-        $id = trim($_POST['cliente_id']);
-    }
-
     $valor = '';
     if (isset($_POST['valor'])) {
         $valor = trim($_POST['valor']);
     }
 
-    $datos = array('cliente_id' => $id, 'valor' => $valor);
-
-    if (!ctype_digit($id) || (int) $id < 1) {
-        guardar_aviso('error', 'El ID del cliente debe ser un número entero mayor que cero.');
-        guardar_formulario($datos);
-        header('Location: ahorrar.php');
-        exit;
-    }
-
-    if ((int) $id != (int) $_SESSION['cliente_id']) {
-        guardar_aviso('error', 'Solo puedes ahorrar desde tu propia cuenta. Tu ID es ' . (int) $_SESSION['cliente_id'] . '.');
-        guardar_formulario($datos);
-        header('Location: ahorrar.php');
-        exit;
-    }
+    $datos = array('valor' => $valor);
 
     if (!ctype_digit($valor) || (int) $valor < 1) {
         guardar_aviso('error', 'Escribe un valor entero mayor que cero, solo con números.');
@@ -123,10 +100,6 @@ include 'inc/cabecera.php';
     <?php mostrar_aviso($aviso); ?>
 
     <form class="panel" method="post" action="ahorrar.php">
-        <label for="cliente_id">ID del cliente</label>
-        <input type="text" id="cliente_id" name="cliente_id" inputmode="numeric" pattern="[0-9]*" value="<?= limpiar($id) ?>" required aria-describedby="ayuda-id">
-        <p class="ayuda" id="ayuda-id">Viene con tu ID. Solo puedes ahorrar desde tu propia cuenta.</p>
-
         <label for="valor">Valor a ahorrar</label>
         <div class="campo-dinero">
             <span aria-hidden="true">$</span>

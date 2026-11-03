@@ -12,7 +12,8 @@ bancofinal/
   index.php          Ingreso (login) y cuenta de prueba
   registro.php       Crear cuenta
   cuenta.php         Saldo, ahorro, acciones e historial
-  ahorrar.php        Pasar plata del saldo al ahorro (solo mi cuenta)
+  ahorrar.php        Pasar plata del saldo al ahorro (siempre mi cuenta)
+  enviar.php         Enviar dinero a otro cliente por su ID
   movimiento.php     Consignar o retirar (?tipo=consignar|retirar)
   estado.php         Diagnóstico de la base de datos (solo lectura)
   logout.php         Cierra la sesión
@@ -36,6 +37,8 @@ scripts **en este orden**:
 
 1. Abre `bancofinal/sql/bancofinal.sql` y ejecuta todo el script (rayo con el
    nombre del archivo, o Ctrl+Shift+Enter). Crea las tablas y los procedimientos.
+   Si ya lo habías corrido antes, **vuelve a correrlo**: amplía el historial con
+   «envio» y «recibido» y crea `sp_bf_enviar` (no borra datos).
 2. Abre `bancofinal/sql/usuarios_prueba.sql` y ejecútalo completo. Crea los
    usuarios `prueba1`, `prueba2` y `prueba3` llamando a `sp_bf_registrar`, así que
    cada uno queda también con su fila en `ahorros` y su saldo inicial.
@@ -79,8 +82,11 @@ datos, creado por `usuarios_prueba.sql`. También puedes entrar con `prueba2` o
 
 - Al registrarse, cada cliente recibe `$ 500.000` de saldo y `$ 0` de ahorro.
 - **Ahorrar** pasa plata del saldo al ahorro (baja el saldo, sube el ahorro).
-  Solo funciona con la cuenta de la sesión: si escribes otro ID, la app no llama
-  al procedimiento y avisa «Solo puedes ahorrar desde tu propia cuenta…».
+  Siempre usa la cuenta de la sesión; ya no pide ID.
+- **Enviar** pasa plata de tu saldo al saldo de otro cliente (por su ID, que se ve
+  en «Mi cuenta» junto al saludo). No puedes enviarte a ti mismo. Es una sola
+  transacción (`sp_bf_enviar`): quien envía queda con un «Envío» y quien recibe con
+  un «Recibido» en el historial.
 - **Consignar** suma plata al saldo.
 - **Retirar** baja el saldo; el ahorro no se toca.
 - Cada operación queda en `bf_historial` y se ve en «Mi cuenta» (máximo 50,
@@ -110,8 +116,10 @@ con la base de datos. Intenta de nuevo en un momento.».
 1. **Caso normal:** entrar con `prueba1` / `123456`, ver saldo `$ 500.000`,
    consignar `$ 100.000`, ahorrar `$ 50.000`, retirar `$ 30.000` y revisar el
    historial.
-2. **ID de otro cliente:** en Ahorrar escribir otro ID (por ejemplo `2` o `999`)
-   → «Solo puedes ahorrar desde tu propia cuenta. Tu ID es 1.» (o el ID real).
+2. **Enviar dinero:** con `prueba1` ir a Enviar, escribir el ID de `prueba2`
+   (se ve en su cuenta) y un valor → «Enviaste…». Entrar con `prueba2` y ver el
+   «Recibido» en su historial. Probar también un ID que no existe, el propio ID y
+   un valor mayor al saldo.
 3. **Saldo en cero:** retirar todo el saldo y entrar a Ahorrar o Retirar → aviso
    «No tienes saldo disponible…».
 4. **Valor mayor al saldo:** retirar o ahorrar más de lo disponible → «Saldo

@@ -35,6 +35,11 @@ CREATE TABLE IF NOT EXISTS bf_historial (
     INDEX idx_historial_cliente (cliente_id, fecha)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- El historial tambien guarda los envios entre clientes.
+-- Se puede ejecutar varias veces: solo amplia los valores permitidos.
+ALTER TABLE bf_historial
+    MODIFY tipo ENUM('ahorro', 'consignacion', 'retiro', 'envio', 'recibido') NOT NULL;
+
 -- ------------------------------------------------------------
 -- Procedimientos (solo se reemplazan los sp_bf_)
 -- ------------------------------------------------------------
@@ -45,6 +50,7 @@ DROP PROCEDURE IF EXISTS sp_bf_consultar;
 DROP PROCEDURE IF EXISTS sp_bf_ahorrar;
 DROP PROCEDURE IF EXISTS sp_bf_consignar;
 DROP PROCEDURE IF EXISTS sp_bf_retirar;
+DROP PROCEDURE IF EXISTS sp_bf_enviar;
 DROP PROCEDURE IF EXISTS sp_bf_historial;
 
 DELIMITER $$
@@ -240,6 +246,78 @@ BEGIN
 
         COMMIT;
         SELECT 'ok' AS resultado, v_saldo AS saldo, v_ahorro AS ahorro;
+    END IF;
+END$$
+
+CREATE PROCEDURE sp_bf_enviar(
+    IN p_origen INT,
+    IN p_destino INT,
+    IN p_valor DECIMAL(12,0)
+)
+BEGIN
+    DECLARE v_saldo DECIMAL(12,0) DEFAULT NULL;
+    DECLARE v_ahorro DECIMAL(12,0) DEFAULT NULL;
+    DECLARE v_saldo_destino DECIMAL(12,0) DEFAULT NULL;
+    DECLARE v_ahorro_destino DECIMAL(12,0) DEFAULT NULL;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'error' AS resultado, 0 AS saldo, 0 AS ahorro;
+    END;
+
+    START TRANSACTION;
+
+    SELECT saldo, ahorro INTO v_saldo, v_ahorro
+    FROM ahorros
+    WHERE id = p_origen
+    FOR UPDATE;
+
+    IF v_saldo IS NULL THEN
+        ROLLBACK;
+        SELECT 'no_existe' AS resultado, 0 AS saldo, 0 AS ahorro;
+    ELSEIF p_valor IS NULL OR p_valor <= 0 THEN
+        ROLLBACK;
+        SELECT 'valor_invalido' AS resultado, v_saldo AS saldo, v_ahorro AS ahorro;
+    ELSEIF p_destino IS NULL OR p_destino = p_origen THEN
+        ROLLBACK;
+        SELECT 'destino_invalido' AS resultado, v_saldo AS saldo, v_ahorro AS ahorro;
+    ELSEIF v_saldo = 0 THEN
+        ROLLBACK;
+        SELECT 'saldo_cero' AS resultado, v_saldo AS saldo, v_ahorro AS ahorro;
+    ELSEIF p_valor > v_saldo THEN
+        ROLLBACK;
+        SELECT 'saldo_insuficiente' AS resultado, v_saldo AS saldo, v_ahorro AS ahorro;
+    ELSE
+        SELECT saldo, ahorro INTO v_saldo_destino, v_ahorro_destino
+        FROM ahorros
+        WHERE id = p_destino
+        FOR UPDATE;
+
+        IF v_saldo_destino IS NULL THEN
+            ROLLBACK;
+            SELECT 'destino_no_existe' AS resultado, v_saldo AS saldo, v_ahorro AS ahorro;
+        ELSE
+            SET v_saldo = v_saldo - p_valor;
+            SET v_saldo_destino = v_saldo_destino + p_valor;
+
+            UPDATE ahorros
+            SET saldo = v_saldo
+            WHERE id = p_origen;
+
+            UPDATE ahorros
+            SET saldo = v_saldo_destino
+            WHERE id = p_destino;
+
+            INSERT INTO bf_historial (cliente_id, fecha, tipo, valor, saldo_despues, ahorro_despues)
+            VALUES (p_origen, NOW(), 'envio', p_valor, v_saldo, v_ahorro);
+
+            INSERT INTO bf_historial (cliente_id, fecha, tipo, valor, saldo_despues, ahorro_despues)
+            VALUES (p_destino, NOW(), 'recibido', p_valor, v_saldo_destino, v_ahorro_destino);
+
+            COMMIT;
+            SELECT 'ok' AS resultado, v_saldo AS saldo, v_ahorro AS ahorro;
+        END IF;
     END IF;
 END$$
 

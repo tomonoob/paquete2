@@ -128,6 +128,12 @@ function nombre_movimiento($tipo)
     if ($tipo == 'retiro') {
         return 'Retiro';
     }
+    if ($tipo == 'envio') {
+        return 'Envío';
+    }
+    if ($tipo == 'recibido') {
+        return 'Recibido';
+    }
 
     return 'Consignación';
 }
@@ -140,6 +146,14 @@ function icono_movimiento($tipo)
 
     if ($tipo == 'retiro') {
         return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V8"/><path d="M7.5 12.5L12 8l4.5 4.5"/><path d="M5 4h14"/></svg>';
+    }
+
+    if ($tipo == 'envio') {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L10.5 13.5"/><path d="M21 3l-6.5 18-4-8-8-4z"/></svg>';
+    }
+
+    if ($tipo == 'recibido') {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h4l1.5 2.5h5L16 12h4"/><path d="M6 4h12l2 8v6H4v-6z"/></svg>';
     }
 
     return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="M7.5 11.5L12 16l4.5-4.5"/><path d="M5 20h14"/></svg>';

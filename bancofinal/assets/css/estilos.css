@@ -450,6 +450,17 @@ input::placeholder {
     font-size: 29px;
 }
 
+.saludo-id {
+    display: inline-block;
+    margin: 6px 0 0 0;
+    padding: 3px 11px;
+    border-radius: 999px;
+    background: var(--lavanda);
+    color: var(--marca);
+    font-size: 13px;
+    font-weight: 800;
+}
+
 .avatar {
     flex: 0 0 48px;
     display: grid;
@@ -579,7 +590,7 @@ input::placeholder {
 
 .acciones {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     margin: 16px 0 26px 0;
 }
@@ -623,6 +634,11 @@ input::placeholder {
 .icono-ahorro {
     background: #F3ECFF;
     color: #6D28D9;
+}
+
+.icono-envio {
+    background: #E6F0FF;
+    color: #1D4ED8;
 }
 
 .icono-consignacion {
@@ -703,6 +719,16 @@ input::placeholder {
     color: #6D28D9;
 }
 
+.mov-icono.mov-envio {
+    background: #E6F0FF;
+    color: #1D4ED8;
+}
+
+.mov-icono.mov-recibido {
+    background: var(--menta-suave);
+    color: var(--menta-oscuro);
+}
+
 .mov-icono.mov-consignacion {
     background: var(--menta-suave);
     color: var(--menta-oscuro);
@@ -741,6 +767,14 @@ input::placeholder {
 }
 
 .mov-valor.mov-consignacion {
+    color: var(--menta-oscuro);
+}
+
+.mov-valor.mov-envio {
+    color: #1D4ED8;
+}
+
+.mov-valor.mov-recibido {
     color: var(--menta-oscuro);
 }
 

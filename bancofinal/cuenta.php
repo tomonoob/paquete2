@@ -40,6 +40,7 @@ include 'inc/cabecera.php';
         <div>
             <p class="saludo-fecha"><?= fecha_hoy() ?></p>
             <h1>Hola, <?= limpiar($_SESSION['primer_nombre']) ?></h1>
+            <p class="saludo-id">Cliente #<?= (int) $_SESSION['cliente_id'] ?></p>
         </div>
         <span class="avatar" aria-hidden="true"><?= limpiar($inicial) ?></span>
     </section>
@@ -64,7 +65,7 @@ include 'inc/cabecera.php';
             <article class="tarjeta-saldo">
                 <p class="etiqueta">Saldo disponible</p>
                 <p class="monto-grande" id="saldo" data-saldo="<?= $saldo ?>"><?= pesos($saldo) ?></p>
-                <p class="nota">Para consignar, retirar o ahorrar.</p>
+                <p class="nota">Para consignar, retirar, ahorrar o enviar.</p>
             </article>
 
             <article class="tarjeta-ahorro">
@@ -85,6 +86,10 @@ include 'inc/cabecera.php';
             <a class="accion" href="ahorrar.php">
                 <span class="accion-icono icono-ahorro"><?= icono_movimiento('ahorro') ?></span>
                 <span>Ahorrar</span>
+            </a>
+            <a class="accion" href="enviar.php">
+                <span class="accion-icono icono-envio"><?= icono_movimiento('envio') ?></span>
+                <span>Enviar</span>
             </a>
             <a class="accion" href="movimiento.php?tipo=consignar">
                 <span class="accion-icono icono-consignacion"><?= icono_movimiento('consignacion') ?></span>
@@ -126,9 +131,13 @@ include 'inc/cabecera.php';
                         if ($tipo == 'consignacion') {
                             $clase = 'mov-consignacion';
                             $signo = '+';
-                        }
-                        if ($tipo == 'retiro') {
+                        } elseif ($tipo == 'retiro') {
                             $clase = 'mov-retiro';
+                        } elseif ($tipo == 'envio') {
+                            $clase = 'mov-envio';
+                        } elseif ($tipo == 'recibido') {
+                            $clase = 'mov-recibido';
+                            $signo = '+';
                         }
                         ?>
                         <li>
