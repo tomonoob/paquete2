@@ -12,7 +12,7 @@ bancofinal/
   index.php          Ingreso (login) y cuenta de prueba
   registro.php       Crear cuenta
   cuenta.php         Saldo, ahorro, acciones e historial
-  ahorrar.php        Pasar plata del saldo al ahorro (siempre mi cuenta)
+  ahorro.php         Agregar al ahorro o sacar del ahorro (siempre mi cuenta)
   enviar.php         Enviar dinero a otro cliente por su ID
   movimiento.php     Consignar o retirar (?tipo=consignar|retirar)
   estado.php         Diagnóstico de la base de datos (solo lectura)
@@ -38,7 +38,7 @@ scripts **en este orden**:
 1. Abre `bancofinal/sql/bancofinal.sql` y ejecuta todo el script (rayo con el
    nombre del archivo, o Ctrl+Shift+Enter). Crea las tablas y los procedimientos.
    Si ya lo habías corrido antes, **vuelve a correrlo**: amplía el historial con
-   «envio» y «recibido» y crea `sp_bf_enviar` (no borra datos).
+   «envio», «recibido» y «ahorro_retiro», y crea `sp_bf_enviar` y `sp_bf_sacar_ahorro` (no borra datos).
 2. Abre `bancofinal/sql/usuarios_prueba.sql` y ejecútalo completo. Crea los
    usuarios `prueba1`, `prueba2` y `prueba3` llamando a `sp_bf_registrar`, así que
    cada uno queda también con su fila en `ahorros` y su saldo inicial.
@@ -81,7 +81,9 @@ datos, creado por `usuarios_prueba.sql`. También puedes entrar con `prueba2` o
 ## 5. Cómo funciona el dinero
 
 - Al registrarse, cada cliente recibe `$ 500.000` de saldo y `$ 0` de ahorro.
-- **Ahorrar** pasa plata del saldo al ahorro (baja el saldo, sube el ahorro).
+- **Ahorro** (`ahorro.php`) tiene dos opciones. «Agregar al ahorro» pasa plata del
+  saldo al ahorro (baja el saldo, sube el ahorro) y «Sacar del ahorro» hace lo
+  contrario (`sp_bf_sacar_ahorro`).
   Siempre usa la cuenta de la sesión; ya no pide ID.
 - **Enviar** pasa plata de tu saldo al saldo de otro cliente (por su ID, que se ve
   en «Mi cuenta» junto al saludo). No puedes enviarte a ti mismo. Es una sola

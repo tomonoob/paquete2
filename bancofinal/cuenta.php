@@ -83,9 +83,9 @@ include 'inc/cabecera.php';
         <?php endif; ?>
 
         <nav class="acciones" aria-label="Acciones de tu cuenta">
-            <a class="accion" href="ahorrar.php">
+            <a class="accion" href="ahorro.php">
                 <span class="accion-icono icono-ahorro"><?= icono_movimiento('ahorro') ?></span>
-                <span>Ahorrar</span>
+                <span>Ahorro</span>
             </a>
             <a class="accion" href="enviar.php">
                 <span class="accion-icono icono-envio"><?= icono_movimiento('envio') ?></span>
@@ -133,6 +133,9 @@ include 'inc/cabecera.php';
                             $signo = '+';
                         } elseif ($tipo == 'retiro') {
                             $clase = 'mov-retiro';
+                        } elseif ($tipo == 'ahorro_retiro') {
+                            $clase = 'mov-ahorro-retiro';
+                            $signo = '+';
                         } elseif ($tipo == 'envio') {
                             $clase = 'mov-envio';
                         } elseif ($tipo == 'recibido') {

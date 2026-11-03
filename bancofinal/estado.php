@@ -18,6 +18,8 @@ if (!$conectado) {
         array('CALL sp_bf_ahorrar(?,?)', array(0, 1)),
         array('CALL sp_bf_consignar(?,?)', array(0, 1)),
         array('CALL sp_bf_retirar(?,?)', array(0, 1)),
+        array('CALL sp_bf_sacar_ahorro(?,?)', array(0, 1)),
+        array('CALL sp_bf_enviar(?,?,?)', array(0, 0, 1)),
         array('CALL sp_bf_historial(?)', array(0))
     );
 

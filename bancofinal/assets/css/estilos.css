@@ -714,7 +714,8 @@ input::placeholder {
     height: 19px;
 }
 
-.mov-icono.mov-ahorro {
+.mov-icono.mov-ahorro,
+.mov-icono.mov-ahorro-retiro {
     background: #F3ECFF;
     color: #6D28D9;
 }
@@ -782,7 +783,8 @@ input::placeholder {
     color: var(--rojo);
 }
 
-.mov-valor.mov-ahorro {
+.mov-valor.mov-ahorro,
+.mov-valor.mov-ahorro-retiro {
     color: #6D28D9;
 }
 
@@ -885,6 +887,62 @@ input::placeholder {
 .aviso-aviso .aviso-icono {
     background: var(--ambar);
     color: #3A2A00;
+}
+
+/* Opciones de ahorro */
+
+.opciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.opciones legend {
+    margin-bottom: 8px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.opcion {
+    position: relative;
+    display: block;
+    margin: 0;
+}
+
+.opcion input {
+    position: absolute;
+    opacity: 0;
+}
+
+.opcion span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 8px 10px;
+    border: 1.5px solid var(--lavanda-borde);
+    border-radius: 14px;
+    background: var(--blanco);
+    color: var(--tinta);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+}
+
+.opcion input:checked + span {
+    border-color: var(--violeta);
+    background: var(--lavanda);
+    color: var(--marca);
+}
+
+.opcion input:focus-visible + span {
+    outline: 3px solid var(--violeta);
+    outline-offset: 2px;
 }
 
 /* Campo de dinero */
