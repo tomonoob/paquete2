@@ -34,5 +34,8 @@ desktop.ini
 *.log
 *.sqlite3
 
-# Database dumps (may contain real customer data)
-*.sql
+# Database dumps
+# *.sql
+
+.agents/
+AGENTS.md
